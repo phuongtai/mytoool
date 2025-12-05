@@ -1,0 +1,1210 @@
+[{
+  "topic": "Daily Routine",
+  "description": "Learn to talk about your daily activities",
+  "steps": [
+    { "step": 1,
+      "words": [{ "en": "wake up", "vi": "thức dậy" }, { "en": "early", "vi": "sớm" }],
+      "phrases": [{ "en": "wake up early", "vi": "thức dậy sớm" }],
+      "sentences": [{ "en": "I wake up early every day", "vi": "Tôi thức dậy sớm mỗi ngày" }]
+    },
+    { "step": 2,
+      "words": [{ "en": "get up", "vi": "ra khỏi giường" }],
+      "phrases": [{ "en": "get up quickly", "vi": "ra khỏi giường nhanh" }],
+      "sentences": [{ "en": "I get up quickly after waking up", "vi": "Tôi ra khỏi giường nhanh sau khi thức dậy" }]
+    },
+    { "step": 3,
+      "words": [{ "en": "wash", "vi": "rửa" }, { "en": "face", "vi": "mặt" }],
+      "phrases": [{ "en": "wash my face", "vi": "rửa mặt" }],
+      "sentences": [{ "en": "I wash my face every morning", "vi": "Tôi rửa mặt mỗi sáng" }]
+    },
+    { "step": 4,
+      "words": [{ "en": "brush", "vi": "đánh" }, { "en": "teeth", "vi": "răng" }],
+      "phrases": [{ "en": "brush my teeth", "vi": "đánh răng" }],
+      "sentences": [{ "en": "I brush my teeth before breakfast", "vi": "Tôi đánh răng trước khi ăn sáng" }]
+    },
+    { "step": 5,
+      "words": [{ "en": "take", "vi": "tắm" }, { "en": "shower", "vi": "tắm vòi sen" }],
+      "phrases": [{ "en": "take a shower", "vi": "tắm" }],
+      "sentences": [{ "en": "I take a shower in the morning", "vi": "Tôi tắm vào buổi sáng" }]
+    },
+    { "step": 6,
+      "words": [{ "en": "get dressed", "vi": "mặc đồ" }],
+      "phrases": [{ "en": "get dressed quickly", "vi": "mặc đồ nhanh" }],
+      "sentences": [{ "en": "I get dressed after showering", "vi": "Tôi mặc đồ sau khi tắm" }]
+    },
+    { "step": 7,
+      "words": [{ "en": "eat", "vi": "ăn" }, { "en": "breakfast", "vi": "bữa sáng" }],
+      "phrases": [{ "en": "eat breakfast", "vi": "ăn sáng" }],
+      "sentences": [{ "en": "I eat breakfast at 7", "vi": "Tôi ăn sáng lúc 7 giờ" }]
+    },
+    { "step": 8,
+      "words": [{ "en": "prepare", "vi": "chuẩn bị" }, { "en": "bag", "vi": "cặp" }],
+      "phrases": [{ "en": "prepare my bag", "vi": "chuẩn bị cặp" }],
+      "sentences": [{ "en": "I prepare my bag before leaving", "vi": "Tôi chuẩn bị cặp trước khi đi" }]
+    },
+    { "step": 9,
+      "words": [{ "en": "leave", "vi": "rời" }, { "en": "home", "vi": "nhà" }],
+      "phrases": [{ "en": "leave home", "vi": "rời nhà" }],
+      "sentences": [{ "en": "I leave home at 7:30", "vi": "Tôi rời nhà lúc 7:30" }]
+    },
+    { "step": 10,
+      "words": [{ "en": "go", "vi": "đi" }, { "en": "work", "vi": "làm" }],
+      "phrases": [{ "en": "go to work", "vi": "đi làm" }],
+      "sentences": [{ "en": "I go to work by motorbike", "vi": "Tôi đi làm bằng xe máy" }]
+    },
+    { "step": 11,
+      "words": [{ "en": "arrive", "vi": "đến" }, { "en": "office", "vi": "văn phòng" }],
+      "phrases": [{ "en": "arrive at the office", "vi": "đến văn phòng" }],
+      "sentences": [{ "en": "I arrive at the office at 8", "vi": "Tôi đến văn phòng lúc 8 giờ" }]
+    },
+    { "step": 12,
+      "words": [{ "en": "start", "vi": "bắt đầu" }],
+      "phrases": [{ "en": "start working", "vi": "bắt đầu làm việc" }],
+      "sentences": [{ "en": "I start working right away", "vi": "Tôi bắt đầu làm việc ngay" }]
+    },
+    { "step": 13,
+      "words": [{ "en": "check", "vi": "kiểm tra" }, { "en": "email", "vi": "email" }],
+      "phrases": [{ "en": "check my email", "vi": "kiểm tra email" }],
+      "sentences": [{ "en": "I check my email every morning", "vi": "Tôi kiểm tra email mỗi sáng" }]
+    },
+    { "step": 14,
+      "words": [{ "en": "attend", "vi": "tham dự" }, { "en": "meeting", "vi": "cuộc họp" }],
+      "phrases": [{ "en": "attend a meeting", "vi": "tham dự cuộc họp" }],
+      "sentences": [{ "en": "I attend a meeting at 9", "vi": "Tôi họp lúc 9 giờ" }]
+    },
+    { "step": 15,
+      "words": [{ "en": "work on", "vi": "làm" }, { "en": "project", "vi": "dự án" }],
+      "phrases": [{ "en": "work on a project", "vi": "làm dự án" }],
+      "sentences": [{ "en": "I work on a big project today", "vi": "Hôm nay tôi làm một dự án lớn" }]
+    },
+    { "step": 16,
+      "words": [{ "en": "drink", "vi": "uống" }, { "en": "coffee", "vi": "cà phê" }],
+      "phrases": [{ "en": "drink coffee", "vi": "uống cà phê" }],
+      "sentences": [{ "en": "I drink coffee in the morning", "vi": "Tôi uống cà phê buổi sáng" }]
+    },
+    { "step": 17,
+      "words": [{ "en": "take", "vi": "nghỉ" }, { "en": "break", "vi": "giải lao" }],
+      "phrases": [{ "en": "take a break", "vi": "nghỉ giải lao" }],
+      "sentences": [{ "en": "I take a break at 10", "vi": "Tôi nghỉ lúc 10 giờ" }]
+    },
+    { "step": 18,
+      "words": [{ "en": "have", "vi": "ăn" }, { "en": "lunch", "vi": "trưa" }],
+      "phrases": [{ "en": "have lunch", "vi": "ăn trưa" }],
+      "sentences": [{ "en": "I have lunch with coworkers", "vi": "Tôi ăn trưa với đồng nghiệp" }]
+    },
+    { "step": 19,
+      "words": [{ "en": "continue", "vi": "tiếp tục" }, { "en": "work", "vi": "làm việc" }],
+      "phrases": [{ "en": "continue working", "vi": "tiếp tục làm việc" }],
+      "sentences": [{ "en": "I continue working after lunch", "vi": "Tôi tiếp tục làm việc sau bữa trưa" }]
+    },
+    { "step": 20,
+      "words": [{ "en": "finish", "vi": "kết thúc" }, { "en": "task", "vi": "nhiệm vụ" }],
+      "phrases": [{ "en": "finish my tasks", "vi": "hoàn thành nhiệm vụ" }],
+      "sentences": [{ "en": "I finish my tasks before leaving", "vi": "Tôi hoàn thành nhiệm vụ trước khi rời đi" }]
+    }
+  ]
+},
+  {
+    "topic": "Food & Cooking",
+    "description": "Learn vocabulary about food and cooking in daily life",
+    "steps": [
+      {
+        "step": 1,
+        "words": [
+          { "en": "breakfast", "vi": "bữa sáng" },
+          { "en": "prepare", "vi": "chuẩn bị" }
+        ],
+        "phrases": [
+          { "en": "prepare breakfast", "vi": "chuẩn bị bữa sáng" }
+        ],
+        "sentences": [
+          { "en": "I prepare breakfast every morning", "vi": "Tôi chuẩn bị bữa sáng mỗi sáng" }
+        ]
+      },
+      {
+        "step": 2,
+        "words": [
+          { "en": "boil", "vi": "luộc" },
+          { "en": "egg", "vi": "trứng" }
+        ],
+        "phrases": [
+          { "en": "boil eggs", "vi": "luộc trứng" }
+        ],
+        "sentences": [
+          { "en": "She likes to boil eggs for breakfast", "vi": "Cô ấy thích luộc trứng cho bữa sáng" }
+        ]
+      },
+      {
+        "step": 3,
+        "words": [
+          { "en": "cook", "vi": "nấu ăn" },
+          { "en": "rice", "vi": "cơm" }
+        ],
+        "phrases": [
+          { "en": "cook rice", "vi": "nấu cơm" }
+        ],
+        "sentences": [
+          { "en": "I cook rice every day", "vi": "Tôi nấu cơm mỗi ngày" }
+        ]
+      },
+      {
+        "step": 4,
+        "words": [
+          { "en": "fry", "vi": "chiên" },
+          { "en": "chicken", "vi": "gà" }
+        ],
+        "phrases": [
+          { "en": "fry chicken", "vi": "chiên gà" }
+        ],
+        "sentences": [
+          { "en": "He can fry chicken very well", "vi": "Anh ấy chiên gà rất ngon" }
+        ]
+      },
+      {
+        "step": 5,
+        "words": [
+          { "en": "cut", "vi": "cắt" },
+          { "en": "vegetables", "vi": "rau củ" }
+        ],
+        "phrases": [
+          { "en": "cut vegetables", "vi": "cắt rau củ" }
+        ],
+        "sentences": [
+          { "en": "She cuts vegetables before cooking", "vi": "Cô ấy cắt rau củ trước khi nấu" }
+        ]
+      },
+      {
+        "step": 6,
+        "words": [
+          { "en": "stir", "vi": "khuấy" },
+          { "en": "soup", "vi": "súp" }
+        ],
+        "phrases": [
+          { "en": "stir the soup", "vi": "khuấy súp" }
+        ],
+        "sentences": [
+          { "en": "Remember to stir the soup gently", "vi": "Hãy khuấy súp nhẹ nhàng" }
+        ]
+      },
+      {
+        "step": 7,
+        "words": [
+          { "en": "taste", "vi": "nếm" },
+          { "en": "salt", "vi": "muối" }
+        ],
+        "phrases": [
+          { "en": "add salt", "vi": "thêm muối" }
+        ],
+        "sentences": [
+          { "en": "Taste the soup before adding salt", "vi": "Nếm súp trước khi thêm muối" }
+        ]
+      },
+      {
+        "step": 8,
+        "words": [
+          { "en": "bake", "vi": "nướng" },
+          { "en": "cake", "vi": "bánh" }
+        ],
+        "phrases": [
+          { "en": "bake a cake", "vi": "nướng bánh" }
+        ],
+        "sentences": [
+          { "en": "We bake a cake every weekend", "vi": "Chúng tôi nướng bánh mỗi cuối tuần" }
+        ]
+      },
+      {
+        "step": 9,
+        "words": [
+          { "en": "mix", "vi": "trộn" },
+          { "en": "ingredients", "vi": "nguyên liệu" }
+        ],
+        "phrases": [
+          { "en": "mix the ingredients", "vi": "trộn các nguyên liệu" }
+        ],
+        "sentences": [
+          { "en": "Mix the ingredients well before cooking", "vi": "Trộn kỹ nguyên liệu trước khi nấu" }
+        ]
+      },
+      {
+        "step": 10,
+        "words": [
+          { "en": "grill", "vi": "nướng vỉ" },
+          { "en": "fish", "vi": "cá" }
+        ],
+        "phrases": [
+          { "en": "grill fish", "vi": "nướng cá" }
+        ],
+        "sentences": [
+          { "en": "He likes to grill fish on weekends", "vi": "Anh ấy thích nướng cá vào cuối tuần" }
+        ]
+      },
+      {
+        "step": 11,
+        "words": [
+          { "en": "wash", "vi": "rửa" },
+          { "en": "fruits", "vi": "trái cây" }
+        ],
+        "phrases": [
+          { "en": "wash fruits", "vi": "rửa trái cây" }
+        ],
+        "sentences": [
+          { "en": "She washes fruits before eating them", "vi": "Cô ấy rửa trái cây trước khi ăn" }
+        ]
+      },
+      {
+        "step": 12,
+        "words": [
+          { "en": "season", "vi": "nêm" },
+          { "en": "pepper", "vi": "tiêu" }
+        ],
+        "phrases": [
+          { "en": "season with pepper", "vi": "nêm tiêu" }
+        ],
+        "sentences": [
+          { "en": "Season the dish with pepper", "vi": "Nêm tiêu cho món ăn" }
+        ]
+      },
+      {
+        "step": 13,
+        "words": [
+          { "en": "serve", "vi": "phục vụ" },
+          { "en": "meal", "vi": "bữa ăn" }
+        ],
+        "phrases": [
+          { "en": "serve the meal", "vi": "phục vụ bữa ăn" }
+        ],
+        "sentences": [
+          { "en": "The meal is ready to serve", "vi": "Bữa ăn đã sẵn sàng để phục vụ" }
+        ]
+      },
+      {
+        "step": 14,
+        "words": [
+          { "en": "slice", "vi": "thái lát" },
+          { "en": "bread", "vi": "bánh mì" }
+        ],
+        "phrases": [
+          { "en": "slice bread", "vi": "thái bánh mì" }
+        ],
+        "sentences": [
+          { "en": "She slices bread for breakfast", "vi": "Cô ấy thái bánh mì cho bữa sáng" }
+        ]
+      },
+      {
+        "step": 15,
+        "words": [
+          { "en": "pour", "vi": "rót" },
+          { "en": "milk", "vi": "sữa" }
+        ],
+        "phrases": [
+          { "en": "pour milk", "vi": "rót sữa" }
+        ],
+        "sentences": [
+          { "en": "He pours milk into the glass", "vi": "Anh ấy rót sữa vào ly" }
+        ]
+      },
+      {
+        "step": 16,
+        "words": [
+          { "en": "heat", "vi": "làm nóng" },
+          { "en": "pan", "vi": "chảo" }
+        ],
+        "phrases": [
+          { "en": "heat the pan", "vi": "làm nóng chảo" }
+        ],
+        "sentences": [
+          { "en": "Heat the pan before frying", "vi": "Làm nóng chảo trước khi chiên" }
+        ]
+      },
+      {
+        "step": 17,
+        "words": [
+          { "en": "taste", "vi": "hương vị" },
+          { "en": "delicious", "vi": "ngon" }
+        ],
+        "phrases": [
+          { "en": "taste delicious", "vi": "có vị ngon" }
+        ],
+        "sentences": [
+          { "en": "The soup tastes delicious", "vi": "Món súp có vị rất ngon" }
+        ]
+      },
+      {
+        "step": 18,
+        "words": [
+          { "en": "clean", "vi": "dọn dẹp" },
+          { "en": "kitchen", "vi": "nhà bếp" }
+        ],
+        "phrases": [
+          { "en": "clean the kitchen", "vi": "dọn dẹp bếp" }
+        ],
+        "sentences": [
+          { "en": "I clean the kitchen after cooking", "vi": "Tôi dọn dẹp bếp sau khi nấu" }
+        ]
+      },
+      {
+        "step": 19,
+        "words": [
+          { "en": "order", "vi": "gọi món" },
+          { "en": "restaurant", "vi": "nhà hàng" }
+        ],
+        "phrases": [
+          { "en": "order food", "vi": "gọi đồ ăn" }
+        ],
+        "sentences": [
+          { "en": "We order food from a restaurant", "vi": "Chúng tôi gọi đồ ăn từ nhà hàng" }
+        ]
+      },
+      {
+        "step": 20,
+        "words": [
+          { "en": "enjoy", "vi": "thưởng thức" },
+          { "en": "meal", "vi": "bữa ăn" }
+        ],
+        "phrases": [
+          { "en": "enjoy the meal", "vi": "thưởng thức bữa ăn" }
+        ],
+        "sentences": [
+          { "en": "Let's enjoy the meal together", "vi": "Hãy thưởng thức bữa ăn cùng nhau" }
+        ]
+      }
+    ]
+  },
+  {
+    "topic": "Travel",
+    "description": "Learn vocabulary used when traveling",
+    "steps": [
+      {
+        "step": 1,
+        "words": [
+          { "en": "travel", "vi": "du lịch" },
+          { "en": "plan", "vi": "lên kế hoạch" }
+        ],
+        "phrases": [
+          { "en": "plan a trip", "vi": "lên kế hoạch chuyến đi" }
+        ],
+        "sentences": [
+          { "en": "We plan a trip every summer", "vi": "Chúng tôi lên kế hoạch du lịch mỗi mùa hè" }
+        ]
+      },
+      {
+        "step": 2,
+        "words": [
+          { "en": "book", "vi": "đặt" },
+          { "en": "hotel", "vi": "khách sạn" }
+        ],
+        "phrases": [
+          { "en": "book a hotel", "vi": "đặt khách sạn" }
+        ],
+        "sentences": [
+          { "en": "I booked a hotel near the beach", "vi": "Tôi đã đặt khách sạn gần biển" }
+        ]
+      },
+      {
+        "step": 3,
+        "words": [
+          { "en": "flight", "vi": "chuyến bay" },
+          { "en": "ticket", "vi": "vé" }
+        ],
+        "phrases": [
+          { "en": "book a flight", "vi": "đặt vé máy bay" }
+        ],
+        "sentences": [
+          { "en": "She booked a flight to Japan", "vi": "Cô ấy đặt vé máy bay đi Nhật" }
+        ]
+      },
+      {
+        "step": 4,
+        "words": [
+          { "en": "passport", "vi": "hộ chiếu" },
+          { "en": "check", "vi": "kiểm tra" }
+        ],
+        "phrases": [
+          { "en": "check your passport", "vi": "kiểm tra hộ chiếu" }
+        ],
+        "sentences": [
+          { "en": "Don't forget to check your passport", "vi": "Đừng quên kiểm tra hộ chiếu" }
+        ]
+      },
+      {
+        "step": 5,
+        "words": [
+          { "en": "luggage", "vi": "hành lý" },
+          { "en": "pack", "vi": "đóng gói" }
+        ],
+        "phrases": [
+          { "en": "pack luggage", "vi": "đóng gói hành lý" }
+        ],
+        "sentences": [
+          { "en": "I packed my luggage last night", "vi": "Tôi đã đóng gói hành lý tối qua" }
+        ]
+      },
+      {
+        "step": 6,
+        "words": [
+          { "en": "airport", "vi": "sân bay" },
+          { "en": "arrive", "vi": "đến" }
+        ],
+        "phrases": [
+          { "en": "arrive at the airport", "vi": "đến sân bay" }
+        ],
+        "sentences": [
+          { "en": "We arrived at the airport early", "vi": "Chúng tôi đến sân bay sớm" }
+        ]
+      },
+      {
+        "step": 7,
+        "words": [
+          { "en": "boarding", "vi": "lên máy bay" },
+          { "en": "gate", "vi": "cổng" }
+        ],
+        "phrases": [
+          { "en": "boarding gate", "vi": "cổng lên máy bay" }
+        ],
+        "sentences": [
+          { "en": "The boarding gate is now open", "vi": "Cổng lên máy bay đã mở" }
+        ]
+      },
+      {
+        "step": 8,
+        "words": [
+          { "en": "seat", "vi": "ghế" },
+          { "en": "window", "vi": "cửa sổ" }
+        ],
+        "phrases": [
+          { "en": "window seat", "vi": "ghế cạnh cửa sổ" }
+        ],
+        "sentences": [
+          { "en": "I prefer a window seat", "vi": "Tôi thích ghế cạnh cửa sổ" }
+        ]
+      },
+      {
+        "step": 9,
+        "words": [
+          { "en": "arrive", "vi": "đến nơi" },
+          { "en": "destination", "vi": "điểm đến" }
+        ],
+        "phrases": [
+          { "en": "reach the destination", "vi": "đến điểm đến" }
+        ],
+        "sentences": [
+          { "en": "We reached our destination safely", "vi": "Chúng tôi đã đến nơi an toàn" }
+        ]
+      },
+      {
+        "step": 10,
+        "words": [
+          { "en": "map", "vi": "bản đồ" },
+          { "en": "location", "vi": "địa điểm" }
+        ],
+        "phrases": [
+          { "en": "check the map", "vi": "kiểm tra bản đồ" }
+        ],
+        "sentences": [
+          { "en": "Check the map to find the location", "vi": "Kiểm tra bản đồ để tìm địa điểm" }
+        ]
+      },
+      {
+        "step": 11,
+        "words": [
+          { "en": "visit", "vi": "thăm" },
+          { "en": "tourist spot", "vi": "địa điểm du lịch" }
+        ],
+        "phrases": [
+          { "en": "visit tourist spots", "vi": "thăm các điểm du lịch" }
+        ],
+        "sentences": [
+          { "en": "We visited many tourist spots today", "vi": "Hôm nay chúng tôi đã thăm nhiều điểm du lịch" }
+        ]
+      },
+      {
+        "step": 12,
+        "words": [
+          { "en": "guide", "vi": "hướng dẫn" },
+          { "en": "tour", "vi": "tour" }
+        ],
+        "phrases": [
+          { "en": "guided tour", "vi": "tour có hướng dẫn" }
+        ],
+        "sentences": [
+          { "en": "We joined a guided tour", "vi": "Chúng tôi tham gia một tour có hướng dẫn" }
+        ]
+      },
+      {
+        "step": 13,
+        "words": [
+          { "en": "photo", "vi": "ảnh" },
+          { "en": "take", "vi": "chụp" }
+        ],
+        "phrases": [
+          { "en": "take photos", "vi": "chụp ảnh" }
+        ],
+        "sentences": [
+          { "en": "I love taking photos when I travel", "vi": "Tôi thích chụp ảnh khi đi du lịch" }
+        ]
+      },
+      {
+        "step": 14,
+        "words": [
+          { "en": "souvenir", "vi": "quà lưu niệm" },
+          { "en": "buy", "vi": "mua" }
+        ],
+        "phrases": [
+          { "en": "buy souvenirs", "vi": "mua quà lưu niệm" }
+        ],
+        "sentences": [
+          { "en": "We bought souvenirs for friends", "vi": "Chúng tôi mua quà lưu niệm cho bạn bè" }
+        ]
+      },
+      {
+        "step": 15,
+        "words": [
+          { "en": "local", "vi": "địa phương" },
+          { "en": "food", "vi": "đồ ăn" }
+        ],
+        "phrases": [
+          { "en": "local food", "vi": "đồ ăn địa phương" }
+        ],
+        "sentences": [
+          { "en": "Try the local food when you travel", "vi": "Hãy thử đồ ăn địa phương khi đi du lịch" }
+        ]
+      },
+      {
+        "step": 16,
+        "words": [
+          { "en": "rent", "vi": "thuê" },
+          { "en": "motorbike", "vi": "xe máy" }
+        ],
+        "phrases": [
+          { "en": "rent a motorbike", "vi": "thuê xe máy" }
+        ],
+        "sentences": [
+          { "en": "We rented a motorbike to explore the city", "vi": "Chúng tôi thuê xe máy để khám phá thành phố" }
+        ]
+      },
+      {
+        "step": 17,
+        "words": [
+          { "en": "beach", "vi": "bãi biển" },
+          { "en": "relax", "vi": "thư giãn" }
+        ],
+        "phrases": [
+          { "en": "relax on the beach", "vi": "thư giãn trên bãi biển" }
+        ],
+        "sentences": [
+          { "en": "We relaxed on the beach all afternoon", "vi": "Chúng tôi thư giãn trên bãi biển cả buổi chiều" }
+        ]
+      },
+      {
+        "step": 18,
+        "words": [
+          { "en": "mountain", "vi": "núi" },
+          { "en": "hike", "vi": "leo núi" }
+        ],
+        "phrases": [
+          { "en": "mountain hike", "vi": "leo núi" }
+        ],
+        "sentences": [
+          { "en": "We went on a mountain hike", "vi": "Chúng tôi đi leo núi" }
+        ]
+      },
+      {
+        "step": 19,
+        "words": [
+          { "en": "return", "vi": "trở về" },
+          { "en": "home", "vi": "nhà" }
+        ],
+        "phrases": [
+          { "en": "return home", "vi": "trở về nhà" }
+        ],
+        "sentences": [
+          { "en": "We returned home after the trip", "vi": "Chúng tôi trở về nhà sau chuyến đi" }
+        ]
+      },
+      {
+        "step": 20,
+        "words": [
+          { "en": "review", "vi": "đánh giá" },
+          { "en": "experience", "vi": "trải nghiệm" }
+        ],
+        "phrases": [
+          { "en": "share experiences", "vi": "chia sẻ trải nghiệm" }
+        ],
+        "sentences": [
+          { "en": "I shared my travel experiences online", "vi": "Tôi chia sẻ trải nghiệm du lịch của mình lên mạng" }
+        ]
+      }
+    ]
+  },
+
+
+  {
+    "topic": "Work & Office",
+    "description": "English for daily work and office communication",
+    "steps": [
+      {
+        "step": 1,
+        "words": [
+          { "en": "work", "vi": "làm việc" },
+          { "en": "office", "vi": "văn phòng" }
+        ],
+        "phrases": [
+          { "en": "go to the office", "vi": "đi đến văn phòng" }
+        ],
+        "sentences": [
+          { "en": "I go to the office every morning", "vi": "Tôi đi đến văn phòng mỗi sáng" }
+        ]
+      },
+
+      {
+        "step": 2,
+        "words": [
+          { "en": "email", "vi": "email" },
+          { "en": "send", "vi": "gửi" }
+        ],
+        "phrases": [
+          { "en": "send an email", "vi": "gửi email" }
+        ],
+        "sentences": [
+          { "en": "I send emails to clients every day", "vi": "Tôi gửi email cho khách hàng mỗi ngày" }
+        ]
+      },
+
+      {
+        "step": 3,
+        "words": [
+          { "en": "meeting", "vi": "cuộc họp" },
+          { "en": "join", "vi": "tham gia" }
+        ],
+        "phrases": [
+          { "en": "join a meeting", "vi": "tham gia cuộc họp" }
+        ],
+        "sentences": [
+          { "en": "We will join a meeting at 3 PM", "vi": "Chúng tôi sẽ tham gia cuộc họp lúc 3 giờ chiều" }
+        ]
+      },
+
+      {
+        "step": 4,
+        "words": [
+          { "en": "task", "vi": "nhiệm vụ" },
+          { "en": "complete", "vi": "hoàn thành" }
+        ],
+        "phrases": [
+          { "en": "complete a task", "vi": "hoàn thành nhiệm vụ" }
+        ],
+        "sentences": [
+          { "en": "I completed all my tasks today", "vi": "Tôi đã hoàn thành mọi nhiệm vụ hôm nay" }
+        ]
+      },
+
+      {
+        "step": 5,
+        "words": [
+          { "en": "project", "vi": "dự án" },
+          { "en": "start", "vi": "bắt đầu" }
+        ],
+        "phrases": [
+          { "en": "start a project", "vi": "bắt đầu một dự án" }
+        ],
+        "sentences": [
+          { "en": "We started a new project last week", "vi": "Chúng tôi bắt đầu một dự án mới tuần trước" }
+        ]
+      },
+
+      {
+        "step": 6,
+        "words": [
+          { "en": "deadline", "vi": "hạn chót" },
+          { "en": "meet", "vi": "đáp ứng" }
+        ],
+        "phrases": [
+          { "en": "meet the deadline", "vi": "kịp deadline" }
+        ],
+        "sentences": [
+          { "en": "We must meet the deadline", "vi": "Chúng ta phải kịp deadline" }
+        ]
+      },
+
+      {
+        "step": 7,
+        "words": [
+          { "en": "report", "vi": "báo cáo" },
+          { "en": "write", "vi": "viết" }
+        ],
+        "phrases": [
+          { "en": "write a report", "vi": "viết báo cáo" }
+        ],
+        "sentences": [
+          { "en": "She writes a weekly report", "vi": "Cô ấy viết báo cáo hàng tuần" }
+        ]
+      },
+
+      {
+        "step": 8,
+        "words": [
+          { "en": "call", "vi": "cuộc gọi" },
+          { "en": "answer", "vi": "trả lời" }
+        ],
+        "phrases": [
+          { "en": "answer a call", "vi": "trả lời cuộc gọi" }
+        ],
+        "sentences": [
+          { "en": "I answered a call from my manager", "vi": "Tôi trả lời cuộc gọi từ quản lý" }
+        ]
+      },
+
+      {
+        "step": 9,
+        "words": [
+          { "en": "document", "vi": "tài liệu" },
+          { "en": "review", "vi": "xem lại" }
+        ],
+        "phrases": [
+          { "en": "review documents", "vi": "xem lại tài liệu" }
+        ],
+        "sentences": [
+          { "en": "Please review these documents", "vi": "Vui lòng xem lại các tài liệu này" }
+        ]
+      },
+
+      {
+        "step": 10,
+        "words": [
+          { "en": "team", "vi": "đội" },
+          { "en": "support", "vi": "hỗ trợ" }
+        ],
+        "phrases": [
+          { "en": "support the team", "vi": "hỗ trợ đội" }
+        ],
+        "sentences": [
+          { "en": "I support my team whenever they need help", "vi": "Tôi hỗ trợ đội bất cứ khi nào họ cần" }
+        ]
+      },
+
+      {
+        "step": 11,
+        "words": [
+          { "en": "schedule", "vi": "lịch trình" },
+          { "en": "update", "vi": "cập nhật" }
+        ],
+        "phrases": [
+          { "en": "update the schedule", "vi": "cập nhật lịch trình" }
+        ],
+        "sentences": [
+          { "en": "He updated the schedule this morning", "vi": "Anh ấy cập nhật lịch trình sáng nay" }
+        ]
+      },
+
+      {
+        "step": 12,
+        "words": [
+          { "en": "break", "vi": "giờ nghỉ" },
+          { "en": "take", "vi": "lấy" }
+        ],
+        "phrases": [
+          { "en": "take a break", "vi": "nghỉ giải lao" }
+        ],
+        "sentences": [
+          { "en": "Let's take a break", "vi": "Chúng ta hãy nghỉ giải lao" }
+        ]
+      },
+
+      {
+        "step": 13,
+        "words": [
+          { "en": "colleague", "vi": "đồng nghiệp" },
+          { "en": "help", "vi": "giúp" }
+        ],
+        "phrases": [
+          { "en": "help colleagues", "vi": "giúp đồng nghiệp" }
+        ],
+        "sentences": [
+          { "en": "I helped my colleague with a task", "vi": "Tôi giúp đồng nghiệp một nhiệm vụ" }
+        ]
+      },
+
+      {
+        "step": 14,
+        "words": [
+          { "en": "printer", "vi": "máy in" },
+          { "en": "fix", "vi": "sửa" }
+        ],
+        "phrases": [
+          { "en": "fix the printer", "vi": "sửa máy in" }
+        ],
+        "sentences": [
+          { "en": "He fixed the printer quickly", "vi": "Anh ấy sửa máy in rất nhanh" }
+        ]
+      },
+
+      {
+        "step": 15,
+        "words": [
+          { "en": "overtime", "vi": "làm thêm giờ" },
+          { "en": "work", "vi": "làm" }
+        ],
+        "phrases": [
+          { "en": "work overtime", "vi": "làm thêm giờ" }
+        ],
+        "sentences": [
+          { "en": "We worked overtime last night", "vi": "Chúng tôi làm thêm giờ tối qua" }
+        ]
+      },
+
+      {
+        "step": 16,
+        "words": [
+          { "en": "presentation", "vi": "thuyết trình" },
+          { "en": "prepare", "vi": "chuẩn bị" }
+        ],
+        "phrases": [
+          { "en": "prepare a presentation", "vi": "chuẩn bị bài thuyết trình" }
+        ],
+        "sentences": [
+          { "en": "She prepared her presentation carefully", "vi": "Cô ấy chuẩn bị bài thuyết trình rất kỹ" }
+        ]
+      },
+
+      {
+        "step": 17,
+        "words": [
+          { "en": "approve", "vi": "phê duyệt" },
+          { "en": "request", "vi": "yêu cầu" }
+        ],
+        "phrases": [
+          { "en": "approve a request", "vi": "phê duyệt yêu cầu" }
+        ],
+        "sentences": [
+          { "en": "My manager approved the request", "vi": "Quản lý của tôi đã phê duyệt yêu cầu" }
+        ]
+      },
+
+      {
+        "step": 18,
+        "words": [
+          { "en": "feedback", "vi": "phản hồi" },
+          { "en": "give", "vi": "đưa" }
+        ],
+        "phrases": [
+          { "en": "give feedback", "vi": "đưa phản hồi" }
+        ],
+        "sentences": [
+          { "en": "He gave me helpful feedback", "vi": "Anh ấy đưa cho tôi phản hồi hữu ích" }
+        ]
+      },
+
+      {
+        "step": 19,
+        "words": [
+          { "en": "improve", "vi": "cải thiện" },
+          { "en": "skill", "vi": "kỹ năng" }
+        ],
+        "phrases": [
+          { "en": "improve skills", "vi": "cải thiện kỹ năng" }
+        ],
+        "sentences": [
+          { "en": "I improve my skills by learning every day", "vi": "Tôi cải thiện kỹ năng bằng cách học mỗi ngày" }
+        ]
+      },
+
+      {
+        "step": 20,
+        "words": [
+          { "en": "finish", "vi": "kết thúc" },
+          { "en": "workday", "vi": "ngày làm việc" }
+        ],
+        "phrases": [
+          { "en": "finish the workday", "vi": "kết thúc ngày làm việc" }
+        ],
+        "sentences": [
+          { "en": "I finished my workday at 6 PM", "vi": "Tôi kết thúc ngày làm việc lúc 6 giờ chiều" }
+        ]
+      }
+    ]
+  },
+  {
+    "topic": "Shopping",
+    "description": "Useful English expressions for shopping",
+    "steps": [
+      {
+        "step": 1,
+        "words": [
+          { "en": "shop", "vi": "mua sắm" },
+          { "en": "store", "vi": "cửa hàng" }
+        ],
+        "phrases": [
+          { "en": "go shopping", "vi": "đi mua sắm" }
+        ],
+        "sentences": [
+          { "en": "We go shopping every weekend", "vi": "Chúng tôi đi mua sắm mỗi cuối tuần" }
+        ]
+      },
+      {
+      "step": 2,
+       "words":[
+          { "en": "buy", "vi": "mua" },
+          { "en": "clothes", "vi": "quần áo" }
+        ],
+        "phrases": [
+          { "en": "buy clothes", "vi": "mua quần áo" }
+        ],
+        "sentences": [
+          { "en": "I buy clothes online", "vi": "Tôi mua quần áo online" }
+        ]
+      },
+
+      {
+        "step": 3,
+        "words": [
+          { "en": "size", "vi": "kích cỡ" },
+          { "en": "fit", "vi": "vừa" }
+        ],
+        "phrases": [
+          { "en": "fit well", "vi": "vừa vặn" }
+        ],
+        "sentences": [
+          { "en": "This shirt fits me well", "vi": "Chiếc áo này rất vừa với tôi" }
+        ]
+      },
+
+      {
+        "step": 4,
+        "words": [
+          { "en": "price", "vi": "giá" },
+          { "en": "check", "vi": "kiểm tra" }
+        ],
+        "phrases": [
+          { "en": "check the price", "vi": "kiểm tra giá" }
+        ],
+        "sentences": [
+          { "en": "Please check the price for me", "vi": "Làm ơn kiểm tra giá giúp tôi" }
+        ]
+      },
+
+      {
+        "step": 5,
+        "words": [
+          { "en": "discount", "vi": "giảm giá" },
+          { "en": "sale", "vi": "khuyến mãi" }
+        ],
+        "phrases": [
+          { "en": "on sale", "vi": "đang giảm giá" }
+        ],
+        "sentences": [
+          { "en": "These shoes are on sale", "vi": "Đôi giày này đang giảm giá" }
+        ]
+      },
+
+      {
+        "step": 6,
+        "words": [
+          { "en": "try", "vi": "thử" },
+          { "en": "room", "vi": "phòng" }
+        ],
+        "phrases": [
+          { "en": "try on clothes", "vi": "thử quần áo" }
+        ],
+        "sentences": [
+          { "en": "I want to try on this jacket", "vi": "Tôi muốn thử chiếc áo khoác này" }
+        ]
+      },
+
+      {
+        "step": 7,
+        "words": [
+          { "en": "cashier", "vi": "thu ngân" },
+          { "en": "pay", "vi": "trả tiền" }
+        ],
+        "phrases": [
+          { "en": "pay at the cashier", "vi": "trả tiền tại thu ngân" }
+        ],
+        "sentences": [
+          { "en": "We pay at the cashier", "vi": "Chúng tôi trả tiền tại thu ngân" }
+        ]
+      },
+
+      {
+        "step": 8,
+        "words": [
+          { "en": "bag", "vi": "túi" },
+          { "en": "carry", "vi": "mang" }
+        ],
+        "phrases": [
+          { "en": "carry the bag", "vi": "mang túi" }
+        ],
+        "sentences": [
+          { "en": "He carried the bags for me", "vi": "Anh ấy mang túi giúp tôi" }
+        ]
+      },
+
+      {
+        "step": 9,
+        "words": [
+          { "en": "product", "vi": "sản phẩm" },
+          { "en": "choose", "vi": "chọn" }
+        ],
+        "phrases": [
+          { "en": "choose a product", "vi": "chọn sản phẩm" }
+        ],
+        "sentences": [
+          { "en": "She chose a good product", "vi": "Cô ấy đã chọn một sản phẩm tốt" }
+        ]
+      },
+
+      {
+        "step": 10,
+        "words": [
+          { "en": "refund", "vi": "hoàn tiền" },
+          { "en": "return", "vi": "trả lại" }
+        ],
+        "phrases": [
+          { "en": "return a product", "vi": "trả lại sản phẩm" }
+        ],
+        "sentences": [
+          { "en": "I returned the product and got a refund", "vi": "Tôi trả lại sản phẩm và được hoàn tiền" }
+        ]
+      },
+
+      {
+        "step": 11,
+        "words": [
+          { "en": "barcode", "vi": "mã vạch" },
+          { "en": "scan", "vi": "quét" }
+        ],
+        "phrases": [
+          { "en": "scan the barcode", "vi": "quét mã vạch" }
+        ],
+        "sentences": [
+          { "en": "They scanned the barcode at checkout", "vi": "Họ quét mã vạch tại quầy thanh toán" }
+        ]
+      },
+
+      {
+        "step": 12,
+        "words": [
+          { "en": "receipt", "vi": "hoá đơn" },
+          { "en": "keep", "vi": "giữ" }
+        ],
+        "phrases": [
+          { "en": "keep the receipt", "vi": "giữ hoá đơn" }
+        ],
+        "sentences": [
+          { "en": "Keep the receipt for warranty", "vi": "Giữ hoá đơn để bảo hành" }
+        ]
+      },
+
+      {
+        "step": 13,
+        "words": [
+          { "en": "catalog", "vi": "danh mục" },
+          { "en": "look through", "vi": "xem qua" }
+        ],
+        "phrases": [
+          { "en": "look through the catalog", "vi": "xem qua danh mục" }
+        ],
+        "sentences": [
+          { "en": "Look through the catalog before choosing", "vi": "Hãy xem qua danh mục trước khi chọn" }
+        ]
+      },
+
+      {
+        "step": 14,
+        "words": [
+          { "en": "brand", "vi": "thương hiệu" },
+          { "en": "popular", "vi": "phổ biến" }
+        ],
+        "phrases": [
+          { "en": "popular brand", "vi": "thương hiệu phổ biến" }
+        ],
+        "sentences": [
+          { "en": "This is a very popular brand", "vi": "Đây là một thương hiệu rất phổ biến" }
+        ]
+      },
+
+      {
+        "step": 15,
+        "words": [
+          { "en": "quality", "vi": "chất lượng" },
+          { "en": "high", "vi": "cao" }
+        ],
+        "phrases": [
+          { "en": "high quality", "vi": "chất lượng cao" }
+        ],
+        "sentences": [
+          { "en": "These shoes are high quality", "vi": "Đôi giày này chất lượng cao" }
+        ]
+      },
+
+      {
+        "step": 16,
+        "words": [
+          { "en": "expensive", "vi": "đắt" },
+          { "en": "cheap", "vi": "rẻ" }
+        ],
+        "phrases": [
+          { "en": "too expensive", "vi": "quá đắt" }
+        ],
+        "sentences": [
+          { "en": "This jacket is too expensive for me", "vi": "Chiếc áo này quá đắt với tôi" }
+        ]
+      },
+
+      {
+        "step": 17,
+        "words": [
+          { "en": "cash", "vi": "tiền mặt" },
+          { "en": "card", "vi": "thẻ" }
+        ],
+        "phrases": [
+          { "en": "pay by card", "vi": "trả bằng thẻ" }
+        ],
+        "sentences": [
+          { "en": "I prefer to pay by card", "vi": "Tôi thích trả bằng thẻ hơn" }
+        ]
+      },
+
+      {
+        "step": 18,
+        "words": [
+          { "en": "queue", "vi": "xếp hàng" },
+          { "en": "wait", "vi": "chờ" }
+        ],
+        "phrases": [
+          { "en": "wait in line", "vi": "xếp hàng chờ" }
+        ],
+        "sentences": [
+          { "en": "We waited in line for 10 minutes", "vi": "Chúng tôi xếp hàng chờ 10 phút" }
+        ]
+      },
+
+      {
+        "step": 19,
+        "words": [
+          { "en": "online shopping", "vi": "mua sắm online" },
+          { "en": "delivery", "vi": "giao hàng" }
+        ],
+        "phrases": [
+          { "en": "fast delivery", "vi": "giao hàng nhanh" }
+        ],
+        "sentences": [
+          { "en": "Online shopping with fast delivery is convenient", "vi": "Mua sắm online giao nhanh rất tiện lợi" }
+        ]
+      },
+
+      {
+        "step": 20,
+        "words": [
+          { "en": "wishlist", "vi": "danh sách yêu thích" },
+          { "en": "add", "vi": "thêm" }
+        ],
+        "phrases": [
+          { "en": "add to wishlist", "vi": "thêm vào danh sách yêu thích" }
+        ],
+        "sentences": [
+          { "en": "I added this item to my wishlist", "vi": "Tôi đã thêm món này vào danh sách yêu thích" }
+        ]
+      }
+    ]
+  }
+]
