@@ -104,50 +104,33 @@ const getAudioBytes = async (text, voiceId, speed) => {
 
   console.log(`Cache MISS: ${filename}`);
 
-  // 2. Generate (Cambridge or Google)
+  // 2. Generate with Google TTS only
+  // Cambridge audio should be pre-cached via prepare-cache.js script
   let audioBuffer = null;
-  const words = text.split(/\s+/);
-  const isSingleWord = words.length === 1 && /^[a-zA-Z]+$/.test(text);
 
-  // A. Cambridge
-  if (isSingleWord) {
-    const camUrl = await getCambridgeAudio(text.toLowerCase());
-    if (camUrl) {
-      try {
-        const resp = await axios.get(camUrl, { responseType: 'arraybuffer', timeout: 10000 });
-        if (resp.status === 200) {
-          audioBuffer = Buffer.from(resp.data);
-        }
-      } catch (e) {
-        console.error('Cambridge Download Error:', e.message);
-      }
-    }
+  console.log(`Using Google Cloud TTS for: '${text}'`);
+  if (!GOOGLE_API_KEY) {
+    return null;
   }
 
-  // B. Google TTS
-  if (!audioBuffer) {
-    if (!GOOGLE_API_KEY) {
-      return null;
-    }
+  const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_API_KEY}`;
+  const payload = {
+    input: { text },
+    voice: { languageCode: 'en-US', name: voiceId },
+    audioConfig: { audioEncoding: 'MP3', speakingRate: speed, volumeGainDb: 6.0 }
+  };
 
-    const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_API_KEY}`;
-    const payload = {
-      input: { text },
-      voice: { languageCode: 'en-US', name: voiceId },
-      audioConfig: { audioEncoding: 'MP3', speakingRate: speed, volumeGainDb: 6.0 }
-    };
-
-    try {
-      const resp = await axios.post(url, payload, { timeout: 15000 });
-      if (resp.data.audioContent) {
-        audioBuffer = Buffer.from(resp.data.audioContent, 'base64');
-      }
-    } catch (e) {
-      console.error('Google TTS Error:', e.response?.data || e.message);
+  try {
+    const resp = await axios.post(url, payload, { timeout: 15000 });
+    if (resp.data.audioContent) {
+      audioBuffer = Buffer.from(resp.data.audioContent, 'base64');
     }
+  } catch (e) {
+    console.error('Google TTS Error:', e.response?.data || e.message);
+    return null;
   }
 
-  // 4. Upload & Return
+  // Upload & Return
   if (audioBuffer) {
     await uploadToSupabase(filename, audioBuffer);
     return audioBuffer;
@@ -186,6 +169,69 @@ app.post('/api/tts', async (req, res) => {
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', engine: 'node' });
+});
+
+// Get all topics with their steps and items
+app.get('/api/topics', async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+
+    // Fetch topics
+    const { data: topics, error: topicsError } = await supabase
+      .from('topics')
+      .select('*')
+      .order('order_index');
+
+    if (topicsError) throw topicsError;
+
+    // Fetch all steps and items for efficiency
+    const topicIds = topics.map(t => t.id);
+    
+    const { data: steps, error: stepsError } = await supabase
+      .from('steps')
+      .select('*')
+      .in('topic_id', topicIds)
+      .order('order_index');
+
+    if (stepsError) throw stepsError;
+
+    const stepIds = steps.map(s => s.id);
+    
+    const { data: items, error: itemsError } = await supabase
+      .from('items')
+      .select('*')
+      .in('step_id', stepIds)
+      .order('order_index');
+
+    if (itemsError) throw itemsError;
+
+    // Transform to frontend format
+    const formattedTopics = topics.map(topic => {
+      const topicSteps = steps.filter(s => s.topic_id === topic.id);
+      
+      return {
+        topic: topic.name,
+        description: topic.description,
+        steps: topicSteps.map(step => {
+          const stepItems = items.filter(i => i.step_id === step.id);
+          
+          return {
+            step: step.step_number,
+            words: stepItems.filter(i => i.type === 'word').map(i => ({ en: i.english, vi: i.vietnamese })),
+            phrases: stepItems.filter(i => i.type === 'phrase').map(i => ({ en: i.english, vi: i.vietnamese })),
+            sentences: stepItems.filter(i => i.type === 'sentence').map(i => ({ en: i.english, vi: i.vietnamese }))
+          };
+        })
+      };
+    });
+
+    res.json(formattedTopics);
+  } catch (error) {
+    console.error('Topics fetch error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 

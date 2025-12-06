@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import TOPICS from '../data/topics.json';
+import { useNavigate } from '@tanstack/react-router';
+import { useStore } from '@tanstack/react-store';
 import { playTTS, AVAILABLE_VOICES } from '../services/tts';
 import { supabase } from '../services/supabaseClient';
+import { learnStore, learnActions } from '../store/learnStore';
 
 
-export default function LearnEnglish() {
+export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
+  const navigate = useNavigate();
+  
+  // Subscribe to store state
+  const topics = useStore(learnStore, (state) => state.topics);
+  const selectedTopic = useStore(learnStore, (state) => state.selectedTopic);
+  const currentStepIndex = useStore(learnStore, (state) => state.currentStepIndex);
+  const subStepIndex = useStore(learnStore, (state) => state.subStepIndex);
+  const storeLoading = useStore(learnStore, (state) => state.loading);
+  const selectedVoiceId = useStore(learnStore, (state) => state.selectedVoiceId) || AVAILABLE_VOICES[0].id;
+  
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
 
   // Auth Handling
@@ -15,13 +27,13 @@ export default function LearnEnglish() {
     const guestMode = localStorage.getItem('guest_mode');
     if (guestMode === 'true') {
       setIsGuest(true);
-      setLoading(false);
+      setAuthLoading(false);
       return;
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      setLoading(false);
+      setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -31,22 +43,21 @@ export default function LearnEnglish() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  
-  const [currentStepIndex, setCurrentStepIndex] = useState(() => {
-    const saved = localStorage.getItem('learn_english_step_index');
-    return saved ? parseInt(saved, 10) : 0;
-  });
-  
-  // Index within the flattened items of the current step
-  const [subStepIndex, setSubStepIndex] = useState(0);
+  // Fetch topics from API (store handles deduplication)
+  useEffect(() => {
+    learnActions.fetchTopics();
+  }, []);
+
+  // Restore state from URL params when topics are loaded
+  useEffect(() => {
+    console.log('[Restore] topicSlug:', topicSlug, 'stepNumber:', stepNumber, 'topics.length:', topics.length);
+    if (topicSlug && topics.length > 0) {
+      console.log('[Restore] Calling restoreFromParams');
+      learnActions.restoreFromParams(topicSlug, stepNumber);
+    }
+  }, [topicSlug, stepNumber, topics]);
 
   const [input, setInput] = useState('');
-  const [selectedVoiceId, setSelectedVoiceId] = useState(() => {
-    const saved = localStorage.getItem('learn_english_voice_id');
-    const isValid = AVAILABLE_VOICES.some(v => v.id === saved);
-    return isValid ? saved : AVAILABLE_VOICES[0].id;
-  });
   const [feedback, setFeedback] = useState(null);
   const inputRef = useRef(null);
 
@@ -68,8 +79,7 @@ export default function LearnEnglish() {
 
   const handleVoiceChange = (e) => {
     const voiceId = e.target.value;
-    setSelectedVoiceId(voiceId);
-    localStorage.setItem('learn_english_voice_id', voiceId);
+    learnActions.setVoiceId(voiceId);
     playTTS("Hello", voiceId);
   };
 
@@ -101,34 +111,31 @@ export default function LearnEnglish() {
   };
 
   const handlePrevious = () => {
-    if (subStepIndex > 0) {
-      setSubStepIndex(prev => prev - 1);
-      setInput('');
-      setFeedback(null);
-    } else if (currentStepIndex > 0) {
-      // Go to previous step's last item
-      setCurrentStepIndex(prev => prev - 1);
-      const prevStepItems = selectedTopic.steps[currentStepIndex - 1];
-      const prevStepLength = (prevStepItems.words?.length || 0) + 
-                             (prevStepItems.phrases?.length || 0) + 
-                             (prevStepItems.sentences?.length || 0);
-      setSubStepIndex(prevStepLength - 1);
-      setInput('');
-      setFeedback(null);
-    }
+    learnActions.previousItem();
+    setInput('');
+    setFeedback(null);
+    // Update URL after state updates
+    setTimeout(() => {
+      if (selectedTopic) {
+        const slug = selectedTopic.topic.toLowerCase().replace(/\s+/g, '-');
+        const newStepIndex = learnStore.state.currentStepIndex;
+        navigate({ to: `/learn-english/${slug}/${newStepIndex + 1}`, replace: true });
+      }
+    }, 0);
   };
 
   const handleNext = () => {
-    if (subStepIndex < currentStepItems.length - 1) {
-      setSubStepIndex(prev => prev + 1);
-      setInput('');
-      setFeedback(null);
-    } else if (currentStepIndex < selectedTopic.steps.length - 1) {
-      setCurrentStepIndex(prev => prev + 1);
-      setSubStepIndex(0);
-      setInput('');
-      setFeedback(null);
-    }
+    learnActions.nextItem();
+    setInput('');
+    setFeedback(null);
+    // Update URL after state updates
+    setTimeout(() => {
+      if (selectedTopic) {
+        const slug = selectedTopic.topic.toLowerCase().replace(/\s+/g, '-');
+        const newStepIndex = learnStore.state.currentStepIndex;
+        navigate({ to: `/learn-english/${slug}/${newStepIndex + 1}`, replace: true });
+      }
+    }, 0);
   };
 
   const validateInput = () => {
@@ -143,22 +150,7 @@ export default function LearnEnglish() {
       setTimeout(() => {
         setFeedback(null);
         setInput('');
-        
-        // Move to next item
-        if (subStepIndex < currentStepItems.length - 1) {
-          setSubStepIndex(prev => prev + 1);
-        } else {
-          // Move to next step
-          if (currentStepIndex < selectedTopic.steps.length - 1) {
-            setCurrentStepIndex(prev => prev + 1);
-            setSubStepIndex(0);
-          } else {
-            // Topic Complete - Reset to start or show completion screen
-            // For now, just loop back to start of topic
-            setCurrentStepIndex(0);
-            setSubStepIndex(0);
-          }
-        }
+        learnActions.nextItem();
       }, 500);
     } else {
       setFeedback('incorrect');
@@ -167,7 +159,7 @@ export default function LearnEnglish() {
   };
 
   // 1. Loading State
-  if (loading) {
+  if (authLoading || storeLoading) {
      return <div className="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center text-gray-500">Loading...</div>;
   }
 
@@ -191,7 +183,8 @@ export default function LearnEnglish() {
     } else {
       await supabase.auth.signOut();
     }
-    setSelectedTopic(null);
+    learnActions.resetTopic();
+    navigate({ to: '/learn-english' });
   };
 
   // 2. TOPIC SELECTION (Modified to handle Auth State)
@@ -247,15 +240,14 @@ export default function LearnEnglish() {
           )}
 
           {/* Render Topics ONLY if authenticated or guest */}
-          {(user || isGuest) && (
+          {(user || isGuest) && topics.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {TOPICS.map((topic) => (
+              {topics.map((topic) => (
                 <button
                   key={topic.topic}
                   onClick={() => {
-                    setSelectedTopic(topic);
-                    setCurrentStepIndex(0);
-                    setSubStepIndex(0);
+                    const slug = topic.topic.toLowerCase().replace(/\s+/g, '-');
+                    navigate({ to: `/learn-english/${slug}/1` });
                   }}
                   className="group relative p-8 bg-white/10 backdrop-blur-md rounded-3xl shadow-xl hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1 text-left space-y-4 border border-white/20 hover:border-white/40"
                 >
@@ -290,7 +282,10 @@ export default function LearnEnglish() {
       {/* Top Left: Title & Info */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 space-y-2 z-20">
         <button 
-          onClick={() => setSelectedTopic(null)}
+          onClick={() => {
+            learnActions.resetTopic();
+            navigate({ to: '/learn-english' });
+          }}
           className="flex items-center gap-2 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors mb-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
@@ -301,26 +296,6 @@ export default function LearnEnglish() {
         </h1>
         <div className="text-sm font-['Work_Sans'] text-gray-500 dark:text-gray-400">
           Step {currentStepIndex + 1}/{selectedTopic.steps.length} • Item {subStepIndex + 1}/{currentStepItems.length}
-        </div>
-      </div>
-
-      {/* Top Right: Voice Selector */}
-      <div className="absolute top-6 right-6 md:top-10 md:right-10 z-20">
-        <div className="relative group">
-          <select
-            value={selectedVoiceId}
-            onChange={handleVoiceChange}
-            className="appearance-none pl-4 pr-10 py-2 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-xl text-sm text-gray-700 dark:text-gray-200 outline-none focus:ring-2 focus:ring-indigo-500/50 cursor-pointer hover:bg-white/40 transition-colors"
-          >
-            {AVAILABLE_VOICES.map(v => (
-              <option key={v.id} value={v.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                {v.name} ({v.gender})
-              </option>
-            ))}
-          </select>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
         </div>
       </div>
 
@@ -345,7 +320,7 @@ export default function LearnEnglish() {
                     inputRef.current?.focus();
                   }
                 }}
-                className="absolute -right-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/30 hover:bg-white/50 text-indigo-600 dark:text-indigo-300 transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                className="absolute -right-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/30 hover:bg-white/50 text-indigo-600 dark:text-indigo-300 transition-all backdrop-blur-sm"
                 title="Play pronunciation"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
