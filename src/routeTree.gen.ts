@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LearnEnglishRouteImport } from './routes/learn-english'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LearnEnglishIndexRouteImport } from './routes/learn-english/index'
-import { Route as LearnEnglishTopicSlugStepNumberRouteImport } from './routes/learn-english/$topicSlug.$stepNumber'
+import { Route as LearnEnglishTopicIdStepNumberRouteImport } from './routes/learn-english/$topicId.$stepNumber'
 
 const LearnEnglishRoute = LearnEnglishRouteImport.update({
   id: '/learn-english',
@@ -29,10 +29,10 @@ const LearnEnglishIndexRoute = LearnEnglishIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LearnEnglishRoute,
 } as any)
-const LearnEnglishTopicSlugStepNumberRoute =
-  LearnEnglishTopicSlugStepNumberRouteImport.update({
-    id: '/$topicSlug/$stepNumber',
-    path: '/$topicSlug/$stepNumber',
+const LearnEnglishTopicIdStepNumberRoute =
+  LearnEnglishTopicIdStepNumberRouteImport.update({
+    id: '/$topicId/$stepNumber',
+    path: '/$topicId/$stepNumber',
     getParentRoute: () => LearnEnglishRoute,
   } as any)
 
@@ -40,19 +40,19 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/learn-english': typeof LearnEnglishRouteWithChildren
   '/learn-english/': typeof LearnEnglishIndexRoute
-  '/learn-english/$topicSlug/$stepNumber': typeof LearnEnglishTopicSlugStepNumberRoute
+  '/learn-english/$topicId/$stepNumber': typeof LearnEnglishTopicIdStepNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/learn-english': typeof LearnEnglishIndexRoute
-  '/learn-english/$topicSlug/$stepNumber': typeof LearnEnglishTopicSlugStepNumberRoute
+  '/learn-english/$topicId/$stepNumber': typeof LearnEnglishTopicIdStepNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/learn-english': typeof LearnEnglishRouteWithChildren
   '/learn-english/': typeof LearnEnglishIndexRoute
-  '/learn-english/$topicSlug/$stepNumber': typeof LearnEnglishTopicSlugStepNumberRoute
+  '/learn-english/$topicId/$stepNumber': typeof LearnEnglishTopicIdStepNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -60,15 +60,15 @@ export interface FileRouteTypes {
     | '/'
     | '/learn-english'
     | '/learn-english/'
-    | '/learn-english/$topicSlug/$stepNumber'
+    | '/learn-english/$topicId/$stepNumber'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/learn-english' | '/learn-english/$topicSlug/$stepNumber'
+  to: '/' | '/learn-english' | '/learn-english/$topicId/$stepNumber'
   id:
     | '__root__'
     | '/'
     | '/learn-english'
     | '/learn-english/'
-    | '/learn-english/$topicSlug/$stepNumber'
+    | '/learn-english/$topicId/$stepNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -99,11 +99,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnEnglishIndexRouteImport
       parentRoute: typeof LearnEnglishRoute
     }
-    '/learn-english/$topicSlug/$stepNumber': {
-      id: '/learn-english/$topicSlug/$stepNumber'
-      path: '/$topicSlug/$stepNumber'
-      fullPath: '/learn-english/$topicSlug/$stepNumber'
-      preLoaderRoute: typeof LearnEnglishTopicSlugStepNumberRouteImport
+    '/learn-english/$topicId/$stepNumber': {
+      id: '/learn-english/$topicId/$stepNumber'
+      path: '/$topicId/$stepNumber'
+      fullPath: '/learn-english/$topicId/$stepNumber'
+      preLoaderRoute: typeof LearnEnglishTopicIdStepNumberRouteImport
       parentRoute: typeof LearnEnglishRoute
     }
   }
@@ -111,12 +111,12 @@ declare module '@tanstack/react-router' {
 
 interface LearnEnglishRouteChildren {
   LearnEnglishIndexRoute: typeof LearnEnglishIndexRoute
-  LearnEnglishTopicSlugStepNumberRoute: typeof LearnEnglishTopicSlugStepNumberRoute
+  LearnEnglishTopicIdStepNumberRoute: typeof LearnEnglishTopicIdStepNumberRoute
 }
 
 const LearnEnglishRouteChildren: LearnEnglishRouteChildren = {
   LearnEnglishIndexRoute: LearnEnglishIndexRoute,
-  LearnEnglishTopicSlugStepNumberRoute: LearnEnglishTopicSlugStepNumberRoute,
+  LearnEnglishTopicIdStepNumberRoute: LearnEnglishTopicIdStepNumberRoute,
 }
 
 const LearnEnglishRouteWithChildren = LearnEnglishRoute._addFileChildren(

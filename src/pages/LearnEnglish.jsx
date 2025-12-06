@@ -6,7 +6,7 @@ import { supabase } from '../services/supabaseClient';
 import { learnStore, learnActions } from '../store/learnStore';
 
 
-export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
+export default function LearnEnglish({ topicId, stepNumber } = {}) {
   const navigate = useNavigate();
   
   // Subscribe to store state
@@ -48,14 +48,12 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
     learnActions.fetchTopics();
   }, []);
 
-  // Restore state from URL params when topics are loaded
+  // Restore state from URL params
   useEffect(() => {
-    console.log('[Restore] topicSlug:', topicSlug, 'stepNumber:', stepNumber, 'topics.length:', topics.length);
-    if (topicSlug && topics.length > 0) {
-      console.log('[Restore] Calling restoreFromParams');
-      learnActions.restoreFromParams(topicSlug, stepNumber);
+    if (topicId) {
+      learnActions.restoreFromParams(topicId, stepNumber);
     }
-  }, [topicSlug, stepNumber, topics]);
+  }, [topicId, stepNumber]);
 
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState(null);
@@ -63,7 +61,7 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
 
   // Flatten the current step's content into a linear list of items to learn
   const currentStepItems = useMemo(() => {
-    if (!selectedTopic || !selectedTopic.steps[currentStepIndex]) return [];
+    if (!selectedTopic || !selectedTopic.steps || !selectedTopic.steps[currentStepIndex]) return [];
     
     const step = selectedTopic.steps[currentStepIndex];
     const items = [];
@@ -83,10 +81,13 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
     playTTS("Hello", voiceId);
   };
 
-  // Play audio when item changes
+  // Play audio when item changes (debounced)
   useEffect(() => {
     if (currentItem) {
-      playTTS(currentItem.en, selectedVoiceId);
+      const timer = setTimeout(() => {
+        playTTS(currentItem.en, selectedVoiceId);
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [currentItem, selectedVoiceId]);
 
@@ -97,14 +98,36 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
     }
   }, [currentItem]);
 
+  const navTimeoutRef = useRef(null);
+  const lastKeyTimeRef = useRef(0);
+
+  const updateUrlDebounced = () => {
+    if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    
+    navTimeoutRef.current = setTimeout(() => {
+      if (selectedTopic) {
+        const newStepIndex = learnStore.state.currentStepIndex;
+        navigate({ to: `/learn-english/${selectedTopic.id}/${newStepIndex + 1}`, replace: true });
+      }
+    }, 500);
+  };
+
   const handleKeyDown = (e) => {
+    // Throttle keyboard input to prevent chaotic scrolling (100ms limit)
+    const now = Date.now();
+    if (now - lastKeyTimeRef.current < 100 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
       validateInput();
     } else if (e.key === 'ArrowLeft') {
+      lastKeyTimeRef.current = now;
       e.preventDefault();
       handlePrevious();
     } else if (e.key === 'ArrowRight') {
+      lastKeyTimeRef.current = now;
       e.preventDefault();
       handleNext();
     }
@@ -114,28 +137,14 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
     learnActions.previousItem();
     setInput('');
     setFeedback(null);
-    // Update URL after state updates
-    setTimeout(() => {
-      if (selectedTopic) {
-        const slug = selectedTopic.topic.toLowerCase().replace(/\s+/g, '-');
-        const newStepIndex = learnStore.state.currentStepIndex;
-        navigate({ to: `/learn-english/${slug}/${newStepIndex + 1}`, replace: true });
-      }
-    }, 0);
+    updateUrlDebounced();
   };
 
   const handleNext = () => {
     learnActions.nextItem();
     setInput('');
     setFeedback(null);
-    // Update URL after state updates
-    setTimeout(() => {
-      if (selectedTopic) {
-        const slug = selectedTopic.topic.toLowerCase().replace(/\s+/g, '-');
-        const newStepIndex = learnStore.state.currentStepIndex;
-        navigate({ to: `/learn-english/${slug}/${newStepIndex + 1}`, replace: true });
-      }
-    }, 0);
+    updateUrlDebounced();
   };
 
   const validateInput = () => {
@@ -244,10 +253,9 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {topics.map((topic) => (
                 <button
-                  key={topic.topic}
+                  key={topic.id}
                   onClick={() => {
-                    const slug = topic.topic.toLowerCase().replace(/\s+/g, '-');
-                    navigate({ to: `/learn-english/${slug}/1` });
+                    navigate({ to: `/learn-english/${topic.id}/1` });
                   }}
                   className="group relative p-8 bg-white/10 backdrop-blur-md rounded-3xl shadow-xl hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1 text-left space-y-4 border border-white/20 hover:border-white/40"
                 >
@@ -258,9 +266,7 @@ export default function LearnEnglish({ topicSlug, stepNumber } = {}) {
                     {topic.description}
                   </p>
                   <div className="pt-4 flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
-                    <span>{topic.steps.length} Steps</span>
-                    <span className="mx-2">•</span>
-                    <span>{topic.steps.reduce((acc, step) => acc + (step.words?.length || 0) + (step.phrases?.length || 0) + (step.sentences?.length || 0), 0)} Items</span>
+                    <span>{topic.steps_count} Steps</span>
                   </div>
                 </button>
               ))}

@@ -171,65 +171,106 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', engine: 'node' });
 });
 
-// Get all topics with their steps and items
+// Get all topics (lightweight)
 app.get('/api/topics', async (req, res) => {
   try {
     if (!supabase) {
       return res.status(500).json({ error: 'Database not configured' });
     }
 
-    // Fetch topics
-    const { data: topics, error: topicsError } = await supabase
+    const { data: topics, error } = await supabase
       .from('topics')
-      .select('*')
+      .select('id, name, description, order_index')
       .order('order_index');
 
-    if (topicsError) throw topicsError;
+    if (error) throw error;
 
-    // Fetch all steps and items for efficiency
-    const topicIds = topics.map(t => t.id);
-    
-    const { data: steps, error: stepsError } = await supabase
+    // Fetch step counts
+    const { data: allSteps, error: stepsError } = await supabase
       .from('steps')
-      .select('*')
-      .in('topic_id', topicIds)
-      .order('order_index');
+      .select('topic_id');
 
     if (stepsError) throw stepsError;
 
-    const stepIds = steps.map(s => s.id);
-    
-    const { data: items, error: itemsError } = await supabase
-      .from('items')
-      .select('*')
-      .in('step_id', stepIds)
-      .order('order_index');
-
-    if (itemsError) throw itemsError;
-
-    // Transform to frontend format
-    const formattedTopics = topics.map(topic => {
-      const topicSteps = steps.filter(s => s.topic_id === topic.id);
-      
-      return {
-        topic: topic.name,
-        description: topic.description,
-        steps: topicSteps.map(step => {
-          const stepItems = items.filter(i => i.step_id === step.id);
-          
-          return {
-            step: step.step_number,
-            words: stepItems.filter(i => i.type === 'word').map(i => ({ en: i.english, vi: i.vietnamese })),
-            phrases: stepItems.filter(i => i.type === 'phrase').map(i => ({ en: i.english, vi: i.vietnamese })),
-            sentences: stepItems.filter(i => i.type === 'sentence').map(i => ({ en: i.english, vi: i.vietnamese }))
-          };
-        })
-      };
+    // Calculate counts
+    const stepsCountMap = {};
+    allSteps.forEach(step => {
+      stepsCountMap[step.topic_id] = (stepsCountMap[step.topic_id] || 0) + 1;
     });
+
+    // Transform to frontend format (lightweight)
+    const formattedTopics = topics.map(topic => ({
+      id: topic.id,
+      topic: topic.name,
+      description: topic.description,
+      steps_count: stepsCountMap[topic.id] || 0
+    }));
 
     res.json(formattedTopics);
   } catch (error) {
     console.error('Topics fetch error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single topic details
+app.get('/api/topics/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!supabase) return res.status(500).json({ error: 'Database not configured' });
+
+    // 1. Fetch Topic
+    const { data: topic, error: topicError } = await supabase
+      .from('topics')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (topicError || !topic) return res.status(404).json({ error: 'Topic not found' });
+
+    // 2. Fetch Steps
+    const { data: steps, error: stepsError } = await supabase
+      .from('steps')
+      .select('*')
+      .eq('topic_id', id)
+      .order('order_index');
+
+    if (stepsError) throw stepsError;
+
+    // 3. Fetch Items
+    const stepIds = steps.map(s => s.id);
+    let items = [];
+    if (stepIds.length > 0) {
+      const { data: fetchedItems, error: itemsError } = await supabase
+        .from('items')
+        .select('*')
+        .in('step_id', stepIds)
+        .order('order_index');
+      
+      if (itemsError) throw itemsError;
+      items = fetchedItems;
+    }
+
+    // 4. Construct Response
+    const formattedTopic = {
+      id: topic.id,
+      topic: topic.name,
+      description: topic.description,
+      steps: steps.map(step => {
+        const stepItems = items.filter(i => i.step_id === step.id);
+        return {
+          step: step.step_number,
+          words: stepItems.filter(i => i.type === 'word').map(i => ({ en: i.english, vi: i.vietnamese })),
+          phrases: stepItems.filter(i => i.type === 'phrase').map(i => ({ en: i.english, vi: i.vietnamese })),
+          sentences: stepItems.filter(i => i.type === 'sentence').map(i => ({ en: i.english, vi: i.vietnamese }))
+        };
+      })
+    };
+
+    res.json(formattedTopic);
+
+  } catch (error) {
+    console.error('Topic detail fetch error:', error);
     res.status(500).json({ error: error.message });
   }
 });

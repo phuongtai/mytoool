@@ -149,24 +149,46 @@ export const learnActions = {
     }
   },
 
-  // Restore state from URL params
-  restoreFromParams: (topicSlug, stepNumber) => {
-    const { topics } = learnStore.state;
-    console.log('[Store] restoreFromParams called with:', { topicSlug, stepNumber, topicsCount: topics.length });
-    
-    if (topicSlug && topics.length > 0) {
-      const topic = topics.find(t => t.topic.toLowerCase().replace(/\s+/g, '-') === topicSlug);
-      console.log('[Store] Found topic:', topic?.topic);
-      if (topic) {
-        const step = stepNumber ? parseInt(stepNumber, 10) - 1 : 0;
-        console.log('[Store] Setting selectedTopic:', topic.topic, 'step:', step);
+  // Fetch topic details
+  fetchTopicDetail: async (topicId) => {
+    learnStore.setState((state) => ({ ...state, loading: true }));
+    try {
+      const response = await fetch(`/api/topics/${topicId}`);
+      if (response.ok) {
+        const topicDetail = await response.json();
         learnStore.setState((state) => ({
           ...state,
-          selectedTopic: topic,
-          currentStepIndex: step >= 0 && step < topic.steps.length ? step : 0,
-          subStepIndex: 0,
+          selectedTopic: topicDetail,
+          loading: false,
         }));
+        return topicDetail;
       }
+    } catch (error) {
+      console.error('Error fetching topic detail:', error);
+      learnStore.setState((state) => ({ ...state, loading: false }));
+    }
+    return null;
+  },
+
+  // Restore state from URL params
+  restoreFromParams: async (topicId, stepNumber) => {
+    // If we have an ID, we should try to fetch the detail for it immediately
+    if (topicId) {
+       await learnActions.fetchTopicDetail(topicId);
+       
+       const step = stepNumber ? parseInt(stepNumber, 10) - 1 : 0;
+       
+       learnStore.setState((state) => {
+         const { selectedTopic } = state;
+         if (selectedTopic && selectedTopic.id === topicId) {
+            return {
+             ...state,
+             currentStepIndex: step >= 0 && step < selectedTopic.steps.length ? step : 0,
+             subStepIndex: 0,
+            };
+         }
+         return state;
+       });
     }
   },
 };
