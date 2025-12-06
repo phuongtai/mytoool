@@ -218,7 +218,13 @@ if (process.env.NODE_ENV === 'production' || process.env.SERVE_STATIC) {
     });
 }
 
-app.listen(PORT, () => {
 
-  console.log(`Node Backend running on http://localhost:${PORT}`);
-});
+// Export for Vercel
+export default app;
+
+// Local Development
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Node Backend running on http://localhost:${PORT}`);
+  });
+}

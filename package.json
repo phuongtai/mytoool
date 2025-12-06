@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"vite\" \"node backend/index.js\"",
-    "api": "node backend/index.js",
+    "dev": "concurrently -k -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"vite\" \"node api/index.js\"",
+    "api": "node api/index.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
