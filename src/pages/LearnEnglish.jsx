@@ -76,16 +76,38 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   }, []);
 
   // Restore state from URL params
-  useEffect(() => {
-    if (topicId) {
-      // Pass user ID to fetch progress
-      learnActions.restoreFromParams(topicId, stepNumber, user?.id);
-    }
-  }, [topicId, stepNumber, user]);
+  // Restore state from URL params - use Ref to prevent double-call in StrictMode
+  const initializedTopicRef = useRef(null);
 
-  const [input, setInput] = useState('');
+  useEffect(() => {
+    if (topicId && initializedTopicRef.current !== `${topicId}-${user?.id}`) {
+      initializedTopicRef.current = `${topicId}-${user?.id}`;
+      learnActions.restoreFromParams(topicId, stepNumber, user?.id);
+    } else if (topicId && stepNumber) {
+        // Just update step if topic is already same (handled in store but good for safety)
+        // actually store handles this.
+    }
+  }, [topicId, user]); // Removed stepNumber from dependency to avoid re-fetching on step change, store handles step update safely if topic matches.
+
+  // Handle step updates separately if needed, but restoreFromParams handles both.
+  // Actually, if we change step, we want to update the store index, but NOT fetch.
+  // restoreFromParams in store DOES check if topic matches.
+  // Let's rely on the store check, but maybe the store check was flawed?
+  // Let's just trust the store check I added previously.
+  // But wait, user said "call 2 API topic detail when click topic".
+  // This implies the initial load.
+  // In React 18 Strict Mode, useEffect runs twice.
+  // Let's use the ref to debounce/guard.
+
+  const [inputWords, setInputWords] = useState([]);
   const [feedback, setFeedback] = useState(null);
-  const inputRef = useRef(null);
+  const inputRefs = useRef([]);
+
+  // Helper to get words from the current item
+  const getTargetWords = (text) => {
+    if (!text) return [];
+    return text.trim().split(/\s+/);
+  };
 
   // Flatten the current step's content into a linear list of items to learn
   const currentStepItems = useMemo(() => {
@@ -113,6 +135,10 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   // Play audio when item changes (debounced) & Preload next items
   useEffect(() => {
     if (currentItem) {
+      // Reset inputs when item changes
+      const words = getTargetWords(currentItem.en);
+      setInputWords(new Array(words.length).fill(''));
+
       // 1. Play current
       const timer = setTimeout(() => {
         playTTS(currentItem.en, selectedVoiceId);
@@ -148,9 +174,12 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   }, [currentItem, selectedVoiceId, subStepIndex, currentStepItems, currentStepIndex, selectedTopic]);
 
   // Focus input when item changes
+  // Focus first input when item changes
   useEffect(() => {
-    if (inputRef.current && currentItem) {
-      inputRef.current.focus();
+    if (inputRefs.current[0] && currentItem) {
+      setTimeout(() => {
+        inputRefs.current[0]?.focus();
+      }, 50);
     }
   }, [currentItem]);
 
@@ -168,63 +197,84 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
     }, 500);
   };
 
-  const handleKeyDown = (e) => {
-    // Throttle keyboard input to prevent chaotic scrolling (100ms limit)
-    const now = Date.now();
-    if (now - lastKeyTimeRef.current < 100 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+  const handleSlotChange = (index, value) => {
+     const newWords = [...inputWords];
+     newWords[index] = value;
+     setInputWords(newWords);
+     if (feedback) setFeedback(null);
+  };
+
+  const handleSlotKeyDown = (e, index) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        validateInput();
         return;
     }
-
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      validateInput();
-    } else if (e.key === 'ArrowLeft') {
-      lastKeyTimeRef.current = now;
-      e.preventDefault();
-      handlePrevious();
-    } else if (e.key === 'ArrowRight') {
-      lastKeyTimeRef.current = now;
-      e.preventDefault();
-      handleNext();
+    // Space: Jump to next word
+    if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        if (index < inputWords.length - 1) {
+            inputRefs.current[index + 1]?.focus();
+        }
+        return;
     }
-  };
-
-  const handlePrevious = () => {
-    learnActions.previousItem();
-    setInput('');
-    setFeedback(null);
-    updateUrlDebounced();
-  };
-
-  const handleNext = () => {
-    learnActions.nextItem();
-    setInput('');
-    setFeedback(null);
-    updateUrlDebounced();
+    // Backspace: If empty, go to prev
+    if (e.key === 'Backspace' && inputWords[index] === '') {
+        e.preventDefault();
+        if (index > 0) {
+            inputRefs.current[index - 1]?.focus();
+        }
+    }
+    // Arrows for Prev/Next Item
+    if (e.key === 'ArrowUp') {
+       e.preventDefault();
+       handlePrevious();
+    } else if (e.key === 'ArrowDown') {
+       e.preventDefault();
+       handleNext();
+    }
   };
 
   const validateInput = () => {
     if (!currentItem) return;
 
     const expected = currentItem.en.toLowerCase().trim();
-    const actual = input.toLowerCase().trim();
+    const actual = inputWords.join(' ').toLowerCase().trim();
 
     if (actual === expected) {
       setFeedback('correct');
-      // Mark as studied
-      if (user?.id) {
-         learnActions.markItemStudied(currentItem.id, user.id);
-      }
+      if (user?.id) learnActions.markItemStudied(currentItem.id, user.id);
       
       setTimeout(() => {
         setFeedback(null);
-        setInput('');
+        setInputWords([]);
         learnActions.nextItem();
       }, 500);
     } else {
       setFeedback('incorrect');
       setTimeout(() => setFeedback(null), 500);
     }
+  };
+
+  // Global Key Handler for Item Navigation (fallback)
+  const handleKeyDown = (e) => {
+     // Arrow keys are handled in slots now, but if focus is elsewhere:
+     if (e.key === 'ArrowLeft') handlePrevious(); // Legacy
+     if (e.key === 'ArrowRight') handleNext(); // Legacy
+  };
+
+  const handlePrevious = () => {
+    learnActions.previousItem();
+    setInputWords([]);
+    setFeedback(null);
+    updateUrlDebounced();
+  };
+
+  const handleNext = () => {
+    learnActions.nextItem();
+    setInputWords([]);
+    setFeedback(null);
+    updateUrlDebounced();
   };
 
   // 1. Loading State
@@ -426,6 +476,8 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   }
 
   // 4. Authenticated: LEARNING SCREEN
+  const targetWords = getTargetWords(currentItem?.en);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden bg-white dark:bg-gray-900">
       {/* Liquid Background */}
@@ -477,7 +529,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
               )}
             </div>
             <div className="relative group inline-block">
-              <p className="text-3xl md:text-4xl font-sans font-medium text-blue-600 dark:text-blue-400 leading-tight">
+              <p className="text-xl md:text-2xl font-sans font-medium text-blue-600 dark:text-blue-400 leading-tight">
                 {currentItem?.vi}
               </p>
               
@@ -485,7 +537,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
                 onClick={() => {
                   if (currentItem) {
                     playTTS(currentItem.en, selectedVoiceId);
-                    inputRef.current?.focus();
+                    inputRefs.current[0]?.focus();
                   }
                 }}
                 className="absolute -right-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/30 hover:bg-white/50 text-indigo-600 dark:text-indigo-300 transition-all backdrop-blur-sm"
@@ -524,28 +576,42 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
               </button>
             </div>
 
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className={`w-full text-center text-5xl md:text-6xl font-['Work_Sans'] font-light p-4 bg-transparent outline-none transition-all duration-300 placeholder-gray-400/30 dark:placeholder-gray-600/30
-                ${feedback === 'correct' 
-                  ? 'text-green-600 dark:text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]' 
-                  : feedback === 'incorrect'
-                  ? 'text-red-500 dark:text-red-400 drop-shadow-[0_0_15px_rgba(248,113,113,0.5)]'
-                  : 'text-gray-800 dark:text-white'
-                }
-              `}
-              placeholder="Type here..."
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-            />
+
+            {/* WORD SLOTS INPUT */}
+            <div className="flex flex-wrap justify-center items-end gap-x-3 gap-y-8 py-4 px-4 w-full">
+              {targetWords.map((word, index) => {
+                 // Calculate width based on smaller font
+                 const width = Math.max(3, word.length * 2.2) + 'rem';
+                 return (
+                   <div key={index} className="relative">
+                     <input
+                       ref={el => inputRefs.current[index] = el}
+                       type="text"
+                       value={inputWords[index] || ''}
+                       onChange={(e) => handleSlotChange(index, e.target.value)}
+                       onKeyDown={(e) => handleSlotKeyDown(e, index)}
+                       className={`
+                         text-center text-3xl md:text-5xl font-['Work_Sans'] font-light 
+                         bg-transparent border-b-2 outline-none transition-all duration-300 pb-2
+                         ${feedback === 'correct' 
+                           ? 'border-green-500 text-green-600 dark:text-green-400' 
+                           : feedback === 'incorrect'
+                           ? 'border-red-500 text-red-500 dark:text-red-400'
+                           : 'border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white focus:border-indigo-500'
+                         }
+                       `}
+                       style={{ width }}
+                       autoComplete="off"
+                       autoCorrect="off"
+                       spellCheck="false"
+                     />
+                   </div>
+                 );
+              })}
+            </div>
             
             <p className="mt-8 text-sm font-['Work_Sans'] text-gray-400 dark:text-gray-500">
-              Press <span className="font-medium text-gray-500 dark:text-gray-400">ENTER</span> to check
+              Type the English words above. Press <span className="font-medium text-gray-500 dark:text-gray-400">Space</span> to jump, <span className="font-medium text-gray-500 dark:text-gray-400">Enter</span> to check.
             </p>
           </div>
         </div>
