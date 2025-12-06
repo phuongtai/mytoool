@@ -175,7 +175,7 @@ const getAudioBytes = async (text, voiceId, speed) => {
 };
 
 // Route
-app.post('/tts', async (req, res) => {
+app.post('/api/tts', async (req, res) => {
   try {
     const { text, voice_id = 'en-US-Journey-F', speed = 1.0 } = req.body;
     if (!text) return res.status(400).json({ error: 'Text is empty' });
@@ -206,6 +206,19 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', engine: 'node' });
 });
 
+
+// Serve static files from 'dist' in production
+if (process.env.NODE_ENV === 'production' || process.env.SERVE_STATIC) {
+    const distPath = path.join(__dirname, '..', 'dist');
+    app.use(express.static(distPath));
+
+    // Handle SPA routing
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+    });
+}
+
 app.listen(PORT, () => {
+
   console.log(`Node Backend running on http://localhost:${PORT}`);
 });
