@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useStore } from '@tanstack/react-store';
-import { playTTS, AVAILABLE_VOICES } from '../services/tts';
+import { playTTS, preloadTTS, AVAILABLE_VOICES } from '../services/tts';
 import { supabase } from '../services/supabaseClient';
 import { learnStore, learnActions } from '../store/learnStore';
 
@@ -110,15 +110,42 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
     playTTS("Hello", voiceId);
   };
 
-  // Play audio when item changes (debounced)
+  // Play audio when item changes (debounced) & Preload next items
   useEffect(() => {
     if (currentItem) {
+      // 1. Play current
       const timer = setTimeout(() => {
         playTTS(currentItem.en, selectedVoiceId);
       }, 500);
+
+      // 2. Preload next items within current step
+      const PRELOAD_COUNT = 3;
+      for (let i = 1; i <= PRELOAD_COUNT; i++) {
+        const nextIdx = subStepIndex + i;
+        if (nextIdx < currentStepItems.length) {
+           preloadTTS(currentStepItems[nextIdx].en, selectedVoiceId);
+        }
+      }
+
+      // 3. Preload start of next step if we are near the end
+      if (subStepIndex >= currentStepItems.length - 2 && selectedTopic) {
+         const nextStepIdx = currentStepIndex + 1;
+         if (nextStepIdx < selectedTopic.steps.length) {
+            const nextStep = selectedTopic.steps[nextStepIdx];
+            const nextStepItems = [];
+            if (nextStep.words) nextStep.words.forEach(w => nextStepItems.push(w));
+            if (nextStep.phrases) nextStep.phrases.forEach(p => nextStepItems.push(p));
+            if (nextStep.sentences) nextStep.sentences.forEach(s => nextStepItems.push(s));
+            
+            for (let i = 0; i < Math.min(3, nextStepItems.length); i++) {
+               preloadTTS(nextStepItems[i].english || nextStepItems[i].en, selectedVoiceId);
+            }
+         }
+      }
+
       return () => clearTimeout(timer);
     }
-  }, [currentItem, selectedVoiceId]);
+  }, [currentItem, selectedVoiceId, subStepIndex, currentStepItems, currentStepIndex, selectedTopic]);
 
   // Focus input when item changes
   useEffect(() => {

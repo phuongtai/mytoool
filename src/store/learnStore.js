@@ -7,10 +7,10 @@ export const learnStore = new Store({
   currentStepIndex: 0,
   subStepIndex: 0,
   loading: true,
-  loading: true,
   hasFetched: false, // Track if we've already fetched topics
   isFetching: false, // Track if a fetch is currently in progress
   selectedVoiceId: null,
+  currentTopicUserId: null,
 });
 
 // Actions to update the store
@@ -63,6 +63,7 @@ export const learnActions = {
       selectedTopic: null,
       currentStepIndex: 0,
       subStepIndex: 0,
+      currentTopicUserId: null,
     }));
   },
 
@@ -161,6 +162,7 @@ export const learnActions = {
           ...state,
           selectedTopic: topicDetail,
           loading: false,
+          currentTopicUserId: userId,
         }));
         return topicDetail;
       }
@@ -216,9 +218,14 @@ export const learnActions = {
   restoreFromParams: async (topicId, stepNumber, userId = null) => {
     // If we have an ID, we should try to fetch the detail for it immediately
     if (topicId) {
-       // Only fetch if not loaded or if user changed (though user change usually reloads page)
-       // Basic check: just fetch always to be safe with progress
-       await learnActions.fetchTopicDetail(topicId, userId);
+       const state = learnStore.state;
+       // Only fetch if we don't have the topic loaded, or if the topic ID is different,
+       // or if the user changed (to ensure we get the correct progress data)
+       if (!state.selectedTopic || 
+            state.selectedTopic.id !== topicId || 
+            state.currentTopicUserId !== userId) {
+         await learnActions.fetchTopicDetail(topicId, userId);
+       }
        
        const step = stepNumber ? parseInt(stepNumber, 10) - 1 : 0;
        
