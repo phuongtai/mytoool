@@ -7,9 +7,18 @@ import { supabase } from '../services/supabaseClient';
 export default function LearnEnglish() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
   // Auth Handling
   useEffect(() => {
+    // Check if user chose guest mode
+    const guestMode = localStorage.getItem('guest_mode');
+    if (guestMode === 'true') {
+      setIsGuest(true);
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
@@ -82,6 +91,43 @@ export default function LearnEnglish() {
     if (e.key === 'Enter') {
       e.preventDefault();
       validateInput();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      handlePrevious();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      handleNext();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (subStepIndex > 0) {
+      setSubStepIndex(prev => prev - 1);
+      setInput('');
+      setFeedback(null);
+    } else if (currentStepIndex > 0) {
+      // Go to previous step's last item
+      setCurrentStepIndex(prev => prev - 1);
+      const prevStepItems = selectedTopic.steps[currentStepIndex - 1];
+      const prevStepLength = (prevStepItems.words?.length || 0) + 
+                             (prevStepItems.phrases?.length || 0) + 
+                             (prevStepItems.sentences?.length || 0);
+      setSubStepIndex(prevStepLength - 1);
+      setInput('');
+      setFeedback(null);
+    }
+  };
+
+  const handleNext = () => {
+    if (subStepIndex < currentStepItems.length - 1) {
+      setSubStepIndex(prev => prev + 1);
+      setInput('');
+      setFeedback(null);
+    } else if (currentStepIndex < selectedTopic.steps.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+      setSubStepIndex(0);
+      setInput('');
+      setFeedback(null);
     }
   };
 
@@ -133,6 +179,21 @@ export default function LearnEnglish() {
     });
   };
 
+  const handleGuestLogin = () => {
+    localStorage.setItem('guest_mode', 'true');
+    setIsGuest(true);
+  };
+
+  const handleLogout = async () => {
+    if (isGuest) {
+      localStorage.removeItem('guest_mode');
+      setIsGuest(false);
+    } else {
+      await supabase.auth.signOut();
+    }
+    setSelectedTopic(null);
+  };
+
   // 2. TOPIC SELECTION (Modified to handle Auth State)
   if (!selectedTopic) {
     return (
@@ -143,9 +204,9 @@ export default function LearnEnglish() {
         <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-pink-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
         
         {/* User Info / Logout (Optional) */}
-        {user && (
-          <button onClick={() => supabase.auth.signOut()} className="absolute top-4 right-4 z-50 text-xs text-gray-500 hover:text-red-500 uppercase tracking-widest">
-              Logout ({user.email})
+        {(user || isGuest) && (
+          <button onClick={handleLogout} className="absolute top-4 right-4 z-50 text-xs text-gray-500 hover:text-red-500 uppercase tracking-widest">
+              Logout {isGuest ? '(Guest)' : `(${user.email})`}
           </button>
         )}
 
@@ -153,16 +214,16 @@ export default function LearnEnglish() {
         <div className="relative z-10 w-full max-w-5xl p-8 space-y-12">
           <div className="text-center space-y-4">
             <h1 className="text-5xl font-['Work_Sans'] font-light text-gray-900 dark:text-white">
-              {user ? "Choose a Topic" : "Welcome"}
+              {user || isGuest ? "Choose a Topic" : "Welcome"}
             </h1>
             <p className="text-xl font-['Work_Sans'] font-light text-gray-600 dark:text-gray-300">
-              {user ? "Select a topic to start your learning journey" : "Sign in to start learning"}
+              {user || isGuest ? "Select a topic to start your learning journey" : "Sign in to start learning"}
             </p>
           </div>
 
           {/* LOGIN OVERLAY for Unauthenticated Users */}
-          {!user && (
-             <div className="flex justify-center py-12">
+          {!user && !isGuest && (
+             <div className="flex flex-col items-center gap-4 py-12">
                 <button
                   onClick={handleGoogleLogin}
                   className="flex items-center justify-center gap-4 px-8 py-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 group ring-1 ring-black/5 dark:ring-white/10"
@@ -173,13 +234,20 @@ export default function LearnEnglish() {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                   </svg>
-                  <span className="text-xl font-medium font-['Work_Sans']">One-Tap Sign in with Google</span>
+                  <span className="text-xl font-medium font-['Work_Sans']">Sign in with Google</span>
+                </button>
+                
+                <button
+                  onClick={handleGuestLogin}
+                  className="text-sm font-['Work_Sans'] text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline transition-colors"
+                >
+                  Continue as Guest
                 </button>
              </div>
           )}
 
-          {/* Render Topics ONLY if authenticated */}
-          {user && (
+          {/* Render Topics ONLY if authenticated or guest */}
+          {(user || isGuest) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {TOPICS.map((topic) => (
                 <button
@@ -288,6 +356,31 @@ export default function LearnEnglish() {
           </div>
 
           <div className="relative w-full pt-8">
+            {/* Navigation Buttons */}
+            <div className="flex justify-between items-center mb-8">
+              <button
+                onClick={handlePrevious}
+                disabled={currentStepIndex === 0 && subStepIndex === 0}
+                className="p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-gray-200 transition-all backdrop-blur-sm"
+                title="Previous (←)"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <button
+                onClick={handleNext}
+                disabled={currentStepIndex === selectedTopic.steps.length - 1 && subStepIndex === currentStepItems.length - 1}
+                className="p-3 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-gray-200 transition-all backdrop-blur-sm"
+                title="Next (→)"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
             <input
               ref={inputRef}
               type="text"

@@ -104,35 +104,19 @@ const getAudioBytes = async (text, voiceId, speed) => {
 
   console.log(`Cache MISS: ${filename}`);
 
-  // 2. Two-word Logic
-  const words = text.split(/\s+/);
-  if (words.length === 2 && /^[a-zA-Z\s]+$/.test(text)) {
-    console.log(`Attempting 2-word concat for: '${text}'`);
-    const b1 = await getAudioBytes(words[0], voiceId, speed);
-    const b2 = await getAudioBytes(words[1], voiceId, speed);
-
-    if (b1 && b2) {
-      console.log(`Concat success for: '${text}'`);
-      const combined = Buffer.concat([b1, b2]);
-      await uploadToSupabase(filename, combined);
-      return combined;
-    }
-  }
-
-  // 3. Generate (Cambridge or Google)
+  // 2. Generate (Cambridge or Google)
   let audioBuffer = null;
+  const words = text.split(/\s+/);
   const isSingleWord = words.length === 1 && /^[a-zA-Z]+$/.test(text);
 
   // A. Cambridge
   if (isSingleWord) {
-    console.log(`Trying Cambridge for: ${text}`);
     const camUrl = await getCambridgeAudio(text.toLowerCase());
     if (camUrl) {
       try {
         const resp = await axios.get(camUrl, { responseType: 'arraybuffer', timeout: 10000 });
         if (resp.status === 200) {
           audioBuffer = Buffer.from(resp.data);
-          console.log('Cambridge Success');
         }
       } catch (e) {
         console.error('Cambridge Download Error:', e.message);
@@ -142,9 +126,7 @@ const getAudioBytes = async (text, voiceId, speed) => {
 
   // B. Google TTS
   if (!audioBuffer) {
-    console.log(`Using Google Cloud TTS for: '${text}'`);
     if (!GOOGLE_API_KEY) {
-      console.error('Google API Key missing');
       return null;
     }
 
