@@ -150,10 +150,11 @@ export const learnActions = {
   },
 
   // Fetch topic details
-  fetchTopicDetail: async (topicId) => {
+  fetchTopicDetail: async (topicId, userId = null) => {
     learnStore.setState((state) => ({ ...state, loading: true }));
     try {
-      const response = await fetch(`/api/topics/${topicId}`);
+      const url = userId ? `/api/topics/${topicId}?user_id=${userId}` : `/api/topics/${topicId}`;
+      const response = await fetch(url);
       if (response.ok) {
         const topicDetail = await response.json();
         learnStore.setState((state) => ({
@@ -170,11 +171,54 @@ export const learnActions = {
     return null;
   },
 
+  // Mark item as studied
+  markItemStudied: async (itemId, userId) => {
+    if (!itemId) return;
+
+    // 1. Optimistic UI Update
+    learnStore.setState((state) => {
+      if (!state.selectedTopic) return state;
+
+      // Deep clone to safely mutate
+      const newTopic = JSON.parse(JSON.stringify(state.selectedTopic));
+      
+      // Helper to find and update
+      const updateList = (list) => {
+        if (!list) return;
+        const item = list.find(i => i.id === itemId);
+        if (item) item.is_studied = true;
+      };
+
+      newTopic.steps.forEach(step => {
+        updateList(step.words);
+        updateList(step.phrases);
+        updateList(step.sentences);
+      });
+
+      return { ...state, selectedTopic: newTopic };
+    });
+
+    // 2. Call API
+    if (userId) {
+      try {
+        await fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId, item_id: itemId })
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
+    }
+  },
+
   // Restore state from URL params
-  restoreFromParams: async (topicId, stepNumber) => {
+  restoreFromParams: async (topicId, stepNumber, userId = null) => {
     // If we have an ID, we should try to fetch the detail for it immediately
     if (topicId) {
-       await learnActions.fetchTopicDetail(topicId);
+       // Only fetch if not loaded or if user changed (though user change usually reloads page)
+       // Basic check: just fetch always to be safe with progress
+       await learnActions.fetchTopicDetail(topicId, userId);
        
        const step = stepNumber ? parseInt(stepNumber, 10) - 1 : 0;
        

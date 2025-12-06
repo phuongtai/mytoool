@@ -213,10 +213,69 @@ app.get('/api/topics', async (req, res) => {
   }
 });
 
+// Save user progress
+app.post('/api/progress', async (req, res) => {
+  try {
+    const { user_id, item_id } = req.body;
+    if (!user_id || !item_id) return res.status(400).json({ error: 'Missing user_id or item_id' });
+    if (!supabase) return res.status(500).json({ error: 'Database not configured' });
+
+    const { error } = await supabase
+      .from('user_progress')
+      .upsert({ user_id, item_id }, { onConflict: 'user_id, item_id' });
+
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Progress save error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get studied items for a user
+app.get('/api/studied-items', async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    if (!user_id) return res.status(400).json({ error: 'Missing user_id' });
+    if (!supabase) return res.status(500).json({ error: 'Database not configured' });
+
+    // Join user_progress with items to get details
+    const { data, error } = await supabase
+      .from('user_progress')
+      .select(`
+        studied_at,
+        items (
+          id,
+          english,
+          vietnamese,
+          type
+        )
+      `)
+      .eq('user_id', user_id)
+      .order('studied_at', { ascending: false });
+
+    if (error) throw error;
+
+    // Flatten the response
+    const studiedItems = data.map(entry => ({
+      studied_at: entry.studied_at,
+      ...entry.items
+    }));
+
+    res.json(studiedItems);
+
+  } catch (error) {
+    console.error('Fetch studied items error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get single topic details
 app.get('/api/topics/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const { user_id } = req.query; // Get user_id from query params
+
     if (!supabase) return res.status(500).json({ error: 'Database not configured' });
 
     // 1. Fetch Topic
@@ -251,18 +310,38 @@ app.get('/api/topics/:id', async (req, res) => {
       items = fetchedItems;
     }
 
-    // 4. Construct Response
+    // 4. Fetch User Progress (if logged in)
+    let studiedItemIds = new Set();
+    if (user_id) {
+       const { data: progress, error: progressError } = await supabase
+         .from('user_progress')
+         .select('item_id')
+         .eq('user_id', user_id);
+       
+       if (!progressError && progress) {
+         progress.forEach(p => studiedItemIds.add(p.item_id));
+       }
+    }
+
+    // 5. Construct Response
     const formattedTopic = {
       id: topic.id,
       topic: topic.name,
       description: topic.description,
       steps: steps.map(step => {
         const stepItems = items.filter(i => i.step_id === step.id);
+        const mapItem = (i) => ({
+          id: i.id,
+          en: i.english,
+          vi: i.vietnamese,
+          is_studied: studiedItemIds.has(i.id)
+        });
+
         return {
           step: step.step_number,
-          words: stepItems.filter(i => i.type === 'word').map(i => ({ en: i.english, vi: i.vietnamese })),
-          phrases: stepItems.filter(i => i.type === 'phrase').map(i => ({ en: i.english, vi: i.vietnamese })),
-          sentences: stepItems.filter(i => i.type === 'sentence').map(i => ({ en: i.english, vi: i.vietnamese }))
+          words: stepItems.filter(i => i.type === 'word').map(mapItem),
+          phrases: stepItems.filter(i => i.type === 'phrase').map(mapItem),
+          sentences: stepItems.filter(i => i.type === 'sentence').map(mapItem)
         };
       })
     };

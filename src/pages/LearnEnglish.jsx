@@ -20,6 +20,33 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Studied Words Modal State
+  const [showStudiedModal, setShowStudiedModal] = useState(false);
+  const [studiedItems, setStudiedItems] = useState([]);
+  const [loadingStudied, setLoadingStudied] = useState(false);
+
+  const handleShowStudied = async () => {
+    setShowStudiedModal(true);
+    if (!user) {
+        setStudiedItems([]); // Or handle guest mode
+        return;
+    }
+    
+    setLoadingStudied(true);
+    try {
+        const res = await fetch(`/api/studied-items?user_id=${user.id}`);
+        if (res.ok) {
+            const data = await res.json();
+            setStudiedItems(data);
+        }
+    } catch (e) {
+        console.error("Failed to load progress:", e);
+    } finally {
+        setLoadingStudied(false);
+    }
+  };
 
   // Auth Handling
   useEffect(() => {
@@ -51,9 +78,10 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
   // Restore state from URL params
   useEffect(() => {
     if (topicId) {
-      learnActions.restoreFromParams(topicId, stepNumber);
+      // Pass user ID to fetch progress
+      learnActions.restoreFromParams(topicId, stepNumber, user?.id);
     }
-  }, [topicId, stepNumber]);
+  }, [topicId, stepNumber, user]);
 
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState(null);
@@ -66,6 +94,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
     const step = selectedTopic.steps[currentStepIndex];
     const items = [];
     
+    // Add is_studied to items
     if (step.words) step.words.forEach(w => items.push({ ...w, type: 'word' }));
     if (step.phrases) step.phrases.forEach(p => items.push({ ...p, type: 'phrase' }));
     if (step.sentences) step.sentences.forEach(s => items.push({ ...s, type: 'sentence' }));
@@ -155,6 +184,10 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
 
     if (actual === expected) {
       setFeedback('correct');
+      // Mark as studied
+      if (user?.id) {
+         learnActions.markItemStudied(currentItem.id, user.id);
+      }
       
       setTimeout(() => {
         setFeedback(null);
@@ -196,6 +229,95 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
     navigate({ to: '/learn-english' });
   };
 
+  // --- REUSABLE USER MENU ---
+  const UserMenu = (
+    (user || isGuest) && (
+      <div className="absolute top-4 right-4 z-[60]">
+        <div className="relative z-50">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full shadow-sm hover:bg-white/30 transition-all text-gray-700 dark:text-gray-200 border border-white/20 cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">
+               {user?.email ? user.email[0].toUpperCase() : 'G'}
+            </div>
+            <span className="text-sm font-medium pr-1">{isGuest ? 'Guest' : user?.email?.split('@')[0]}</span>
+            <svg className={`w-4 h-4 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+          </button>
+
+          {isMenuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200 origin-top-right">
+              <div className="py-1">
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleShowStudied();
+                  }}
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                >
+                  <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                  Words Studied
+                </button>
+                <div className="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Backdrop to close menu */}
+        {isMenuOpen && (
+           <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsMenuOpen(false)}></div>
+        )}
+      </div>
+    )
+  );
+
+  const StudiedModal = (
+     showStudiedModal && (
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+         <div className="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden max-h-[80vh] flex flex-col">
+           <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+             <h2 className="text-2xl font-['Work_Sans'] font-medium text-gray-900 dark:text-white">Your Progress</h2>
+             <button onClick={() => setShowStudiedModal(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+               <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+             </button>
+           </div>
+           
+           <div className="overflow-y-auto p-6 space-y-4">
+             {loadingStudied ? (
+                <div className="text-center py-12 text-gray-500">Loading...</div>
+             ) : studiedItems.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">No items studied yet. Start learning!</div>
+             ) : (
+                <div className="grid gap-3">
+                  {studiedItems.map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                      <div className="flex-1">
+                        <div className="font-medium text-lg text-gray-900 dark:text-white">{item.english}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{item.vietnamese}</div>
+                      </div>
+                      <div className="text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-md uppercase tracking-wider">
+                        {item.type}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+             )}
+           </div>
+         </div>
+      </div>
+    )
+  );
+
   // 2. TOPIC SELECTION (Modified to handle Auth State)
   if (!selectedTopic) {
     return (
@@ -205,12 +327,11 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-pink-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
         
-        {/* User Info / Logout (Optional) */}
-        {(user || isGuest) && (
-          <button onClick={handleLogout} className="absolute top-4 right-4 z-50 text-xs text-gray-500 hover:text-red-500 uppercase tracking-widest">
-              Logout {isGuest ? '(Guest)' : `(${user.email})`}
-          </button>
-        )}
+        {/* User Menu */}
+        {UserMenu}
+
+        {/* Studied Items Modal */}
+        {StudiedModal}
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-5xl p-8 space-y-12">
@@ -284,6 +405,12 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-indigo-950 dark:to-purple-950"></div>
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-pulse"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-pulse"></div>
+      
+      {/* User Menu */}
+      {UserMenu}
+      
+      {/* Studied Items Modal */}
+      {StudiedModal}
 
       {/* Top Left: Title & Info */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 space-y-2 z-20">
@@ -301,7 +428,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
           {selectedTopic.topic}
         </h1>
         <div className="text-sm font-['Work_Sans'] text-gray-500 dark:text-gray-400">
-          Step {currentStepIndex + 1}/{selectedTopic.steps.length} • Item {subStepIndex + 1}/{currentStepItems.length}
+           Step {currentStepIndex + 1}/{selectedTopic.steps.length} • Item {subStepIndex + 1}/{currentStepItems.length}
         </div>
       </div>
 
@@ -311,9 +438,17 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
         {/* Content */}
         <div className="space-y-8 text-center">
           <div className="space-y-4">
-            <h2 className="text-sm font-['Work_Sans'] font-medium text-indigo-500/80 uppercase tracking-[0.2em]">
-              {currentItem?.type}
-            </h2>
+            <div className="flex justify-center items-center gap-3">
+              <h2 className="text-sm font-['Work_Sans'] font-medium text-indigo-500/80 uppercase tracking-[0.2em]">
+                {currentItem?.type}
+              </h2>
+              {currentItem?.is_studied && (
+                <span className="flex items-center gap-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-3 py-1 rounded-full font-bold uppercase tracking-wider shadow-sm border border-green-200 dark:border-green-800">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                  Studied
+                </span>
+              )}
+            </div>
             <div className="relative group inline-block">
               <p className="text-3xl md:text-4xl font-sans font-medium text-blue-600 dark:text-blue-400 leading-tight">
                 {currentItem?.vi}
@@ -390,4 +525,5 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
       </div>
     </div>
   );
+
 }
