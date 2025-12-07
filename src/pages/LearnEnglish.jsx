@@ -141,7 +141,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
 
       // 1. Play current
       const timer = setTimeout(() => {
-        playTTS(currentItem.en, selectedVoiceId);
+        playTTS(currentItem.en, selectedVoiceId, 1, currentItem.id, currentItem.sound_file);
       }, 500);
 
       // 2. Preload next items within current step
@@ -149,7 +149,8 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
       for (let i = 1; i <= PRELOAD_COUNT; i++) {
         const nextIdx = subStepIndex + i;
         if (nextIdx < currentStepItems.length) {
-           preloadTTS(currentStepItems[nextIdx].en, selectedVoiceId);
+           const nextItem = currentStepItems[nextIdx];
+           preloadTTS(nextItem.en, selectedVoiceId, 1, nextItem.id, nextItem.sound_file);
         }
       }
 
@@ -164,7 +165,8 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
             if (nextStep.sentences) nextStep.sentences.forEach(s => nextStepItems.push(s));
             
             for (let i = 0; i < Math.min(3, nextStepItems.length); i++) {
-               preloadTTS(nextStepItems[i].english || nextStepItems[i].en, selectedVoiceId);
+               const nextItem = nextStepItems[i];
+               preloadTTS(nextItem.english || nextItem.en, selectedVoiceId, 1, nextItem.id, nextItem.sound_file);
             }
          }
       }
@@ -536,7 +538,7 @@ export default function LearnEnglish({ topicId, stepNumber } = {}) {
               <button
                 onClick={() => {
                   if (currentItem) {
-                    playTTS(currentItem.en, selectedVoiceId);
+                    playTTS(currentItem.en, selectedVoiceId, 1, currentItem.id, currentItem.sound_file);
                     inputRefs.current[0]?.focus();
                   }
                 }}

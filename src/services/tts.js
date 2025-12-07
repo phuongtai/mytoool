@@ -3,8 +3,8 @@ const BACKEND_URL = '/api/tts';
 // Simple in-memory cache to avoid re-fetching
 const audioCache = new Map();
 
-const fetchAudio = async (text, voiceId, speed) => {
-  const cacheKey = `${text}-${voiceId}-${speed}`;
+const fetchAudio = async (text, voiceId, speed, itemId = null, filename = null) => {
+  const cacheKey = filename || `${text}-${voiceId}-${speed}`;
 
   // 1. Check Memory Cache
   if (audioCache.has(cacheKey)) {
@@ -17,7 +17,7 @@ const fetchAudio = async (text, voiceId, speed) => {
   const response = await fetch(BACKEND_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice_id: voiceId, speed })
+    body: JSON.stringify({ text, voice_id: voiceId, speed, item_id: itemId, filename })
   });
 
   if (!response.ok) throw new Error(`Backend Error: ${response.status}`);
@@ -35,20 +35,20 @@ const fetchAudio = async (text, voiceId, speed) => {
   return audio;
 };
 
-export const preloadTTS = async (text, voiceId = 'en-US-Journey-F', speed = 1) => {
+export const preloadTTS = async (text, voiceId = 'en-US-Journey-F', speed = 1, itemId = null, filename = null) => {
   if (!text) return;
   try {
-    await fetchAudio(text, voiceId, speed);
+    await fetchAudio(text, voiceId, speed, itemId, filename);
   } catch (e) {
     // console.warn("Preload failed for:", text);
   }
 };
 
-export const playTTS = async (text, voiceId = 'en-US-Journey-F', speed = 1) => {
+export const playTTS = async (text, voiceId = 'en-US-Journey-F', speed = 1, itemId = null, filename = null) => {
   if (!text) return;
 
   try {
-    const audio = await fetchAudio(text, voiceId, speed);
+    const audio = await fetchAudio(text, voiceId, speed, itemId, filename);
     
     // Play with error handling
     try {

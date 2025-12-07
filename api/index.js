@@ -142,10 +142,18 @@ const getAudioBytes = async (text, voiceId, speed) => {
 // Route
 app.post('/api/tts', async (req, res) => {
   try {
-    const { text, voice_id = 'en-US-Journey-F', speed = 1.0 } = req.body;
-    if (!text) return res.status(400).json({ error: 'Text is empty' });
+    const { text, voice_id = 'en-US-Journey-F', speed = 1.0, item_id, filename: providedFilename } = req.body;
+    if (!text && !providedFilename) return res.status(400).json({ error: 'Text or filename is required' });
 
-    const filename = getCacheFilename(text.trim(), voice_id, speed);
+    const filename = providedFilename || getCacheFilename(text.trim(), voice_id, speed);
+
+    // Save filename to items table if item_id is provided
+    if (item_id && supabase) {
+       await supabase
+         .from('items')
+         .update({ sound_file: filename })
+         .eq('id', item_id);
+    }
 
     // Fast Path: Check Cache First logic
     if (await checkCacheExists(filename)) {
@@ -334,6 +342,7 @@ app.get('/api/topics/:id', async (req, res) => {
           id: i.id,
           en: i.english,
           vi: i.vietnamese,
+          sound_file: i.sound_file,
           is_studied: studiedItemIds.has(i.id)
         });
 
